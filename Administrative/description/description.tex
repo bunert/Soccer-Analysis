@@ -1,0 +1,50 @@
+\documentclass[]{article}
+
+\usepackage{amsmath,amsthm,amssymb}
+\usepackage[utf8]{inputenc} 
+\usepackage{fancyhdr}
+\usepackage{color}
+\usepackage{geometry}
+\usepackage{graphicx}
+\usepackage{scrextend}
+\usepackage{enumitem}
+
+%declarations
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\comm}[1]{}
+
+\everymath{\displaystyle} %greater math display
+
+%Rand Einstellungen
+\geometry{verbose,a4paper,tmargin=30mm,bmargin=30mm,lmargin=30mm,rmargin=30mm}
+
+%opening
+\title{Soccer Analysis}
+\author{
+	Prof. Pollefeys Marc\\
+	\and
+	Dr. Oswald Martin\\
+}
+
+\date{\today}
+
+
+%header
+\pagestyle{fancy}
+\fancyhf{}
+\cfoot{\thepage}
+
+\begin{document}
+\maketitle
+
+The swiss national soccer team approached our department in order to explore state-of-the-art computer vision and visualization technology to analyze soccer games, generate and visualize player statistics and new performance measures of players or teams.
+
+\subsubsection*{Goal}
+Use a neural network in combination with classical 3D computer vision methods to extract 3D human pose information from multiple TV streams.
+
+
+\subsubsection*{Description}
+The swiss national soccer team approached our department in order to explore state-of-the-art computer vision and visualization technology to analyze soccer games, generate and visualize player statistics and new performance measures of players or teams. Given several TV camera streams, the first goal is to fit skeleton models to all players in 3D space. The work in robustly estimates skeleton joint positions in 2D images. The goal is to register them in 3D and over time to obtain a robust estimation of the players poses, e.g. to extract their viewing direction. The multi-view aggregation can be done with classical techniques like Kalman filtering either after or jointly with the required camera calibration.
+
+\end{document}
