@@ -3,6 +3,7 @@ import argparse
 
 import soccer
 import utils.files as file_utils
+from os.path import isfile, join, exists
 
 ################################################################################
 # run: python3 calibrate_video.py --cameras 1
