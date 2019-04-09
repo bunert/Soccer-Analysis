@@ -1,5 +1,5 @@
 import numpy as np
-import utils.io as io
+import utils.io2 as io
 import utils.camera as cam_utils
 import utils.draw as draw_utils
 import utils.image as image_utils
@@ -57,7 +57,7 @@ def _calibrate_camera_dist_transf(A, R, T, dist_transf, points3d):
     return A__, R__, T__
 
 
-def _set_correspondences(img, field_img_path='./demo/data/field.png'):
+def _set_correspondences(img, field_img_path='./data/field.png'):
 
     field_img = io.imread(field_img_path)
 
@@ -97,7 +97,7 @@ def _set_correspondences(img, field_img_path='./demo/data/field.png'):
     return points2d, points3d
 
 
-def calibrate_by_click(img, mask, edge_sfactor=0.5, field_img_path='./demo/data/field.png'):
+def calibrate_by_click(img, mask, edge_sfactor=0.5, field_img_path='./data/field.png'):
 
     h, w = img.shape[0:2]
 

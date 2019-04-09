@@ -44,7 +44,7 @@ python2 tools/infer_simple.py \
 
 # calibrate camera
 cd ~/Studium/BachelorThesis/code
-python3 calibrate_video.py --cameras 1#--path_to_data $DATADIR
+python3 calibrate_video.py --cameras 1      #--path_to_data $DATADIR
 
 
 ################################################
