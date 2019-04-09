@@ -83,6 +83,63 @@ class SoccerVideo:
         detectron_file = join(self.path_to_dataset, 'metadata', 'detectron.p')
         self._load_metadata(detectron_file, 'detectron')
 
+    def get_frame(self, frame_number, dtype=np.float32, sfactor=1.0, image_type='rgb'):
+        return io.imread(self.frame_fullnames[frame_number], dtype=dtype, sfactor=sfactor, image_type=image_type)
+
+    def get_frame_index(self, frame_name):
+        return self.frame_basenames.index(frame_name)
+
+    def calibrate_camera(self, vis_every=-1):
+        if not exists(join(self.path_to_dataset, 'calib')):
+            os.mkdir(join(self.path_to_dataset, 'calib'))
+
+        calib_file = join(self.path_to_dataset, 'metadata', 'calib.p')
+        if exists(calib_file):
+            glog.info('Loading coarse detections from: {0}'.format(calib_file))
+            with open(calib_file, 'rb') as f:
+                self.calib = pickle.load(f)
+
+        else:
+
+            if not self.file_lists_match(listdir(join(self.path_to_dataset, 'calib'))):
+
+                # The first frame is estimated by manual clicking
+                manual_calib = join(self.path_to_dataset, 'calib', '{0}.npy'.format(self.frame_basenames[0]))
+                if exists(manual_calib):
+                    calib_npy = np.load(manual_calib).item()
+                    A, R, T = calib_npy['A'], calib_npy['R'], calib_npy['T']
+                else:
+                    img = self.get_frame(0)
+                    coarse_mask = self.get_mask_from_detectron(0)
+                    A, R, T = calibration.calibrate_by_click(img, coarse_mask)
+
+                if A is None:
+                    glog.error('Manual calibration failed!')
+                else:
+                    np.save(join(self.path_to_dataset, 'calib', '{0}'.format(self.frame_basenames[0])),
+                            {'A': A, 'R': R, 'T': T})
+                    for i in tqdm(range(1, self.n_frames)):
+                        # glog.info('Calibrating frame {0} ({1}/{2})'.format(self.frame_basenames[i], i, self.n_frames))
+                        img = self.get_frame(i)
+                        coarse_mask = self.get_mask_from_detectron(i)
+
+                        if i % vis_every == 0:
+                            vis = True
+                        else:
+                            vis = False
+                        A, R, T, __ = calibration.calibrate_from_initialization(img, coarse_mask, A, R, T, vis)
+
+                        np.save(join(self.path_to_dataset, 'calib', '{0}'.format(self.frame_basenames[i])),
+                                {'A': A, 'R': R, 'T': T})
+
+            for i, basename in enumerate(tqdm(self.frame_basenames)):
+                calib_npy = np.load(join(self.path_to_dataset, 'calib', '{0}.npy'.format(basename))).item()
+                A, R, T = calib_npy['A'], calib_npy['R'], calib_npy['T']
+                self.calib[basename] = {'A': A, 'R': R, 'T': T}
+
+            with open(calib_file, 'wb') as f:
+                pickle.dump(self.calib, f)
+
     # ---------------------------------------------------------------------------
     # customized from tabletop
     # estimates the poses with openpose and saves them in class SoccerVideo.poses per frame
