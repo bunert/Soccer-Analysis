@@ -1,0 +1,15 @@
+Documentation of example images.
+
+# run detectron
+- soccerontable infer_simple.py outputs the mask of detectron: playermask.png
+- original detectron player detection: detectron_infer_simple.pdf
+- video: bounding boxes: detections.mp4 (field infos used)
+
+# run video calibration
+- need manual correspondences, not so well: failed_calibration.png
+- video: calib.mp4 (not stable with big movements ???)
+
+# run estimate poses
+- better performance with detectron than just openpose: poses.mp4
+- refine_poses removes keypoints outside the field: poses_with/without_refine.jpg
+- video: poses.mp4 
