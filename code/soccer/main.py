@@ -4,7 +4,6 @@ from os.path import isfile, join, exists
 from os import listdir
 from tqdm import tqdm
 from soccer import calibration
-import utils.io2 as io
 import json
 import cv2
 import pickle
@@ -45,13 +44,19 @@ class SoccerVideo:
         # save the poses from openpose
         self.poses = {f: None for f in self.frame_basenames}
 
+        # number of frames
         self.n_frames = len(self.frame_basenames)
         self.ext = self.frame_fullnames[0][-3:]
 
+        # bbox from detectron
         self.bbox = {f: None for f in self.frame_basenames}
+        # mask from detectron
         self.mask = {f: None for f in self.frame_basenames}
+        # camera calibration infos
         self.calib = {f: None for f in self.frame_basenames}
+        # detectron output
         self.detectron = {f: None for f in self.frame_basenames}
+        # can use those infos for ball?
         self.ball = {f: None for f in self.frame_basenames}
         self.tracks = None
 
@@ -63,10 +68,12 @@ class SoccerVideo:
         if not exists(join(path_to_dataset, 'metadata')):
             os.mkdir(join(path_to_dataset, 'metadata'))
 
+        # save the shape of the images
         img_ = self.get_frame(0)
         self.shape = img_.shape
 
     # ---------------------------------------------------------------------------
+
     def _load_metadata(self, filename, attr):
         if exists(filename):
             with open(filename, 'rb') as f:
@@ -146,7 +153,7 @@ class SoccerVideo:
                 pickle.dump(self.calib, f)
 
     # ---------------------------------------------------------------------------
-    # customized from tabletop
+    # customized slightly from tabletop project
     # estimates the poses with openpose and saves them in class soccer.poses per frame
     def estimate_openposes(self, redo=False, openpose_dir='~/installations/openpose', pad=150):
 
@@ -187,6 +194,8 @@ class SoccerVideo:
 
                 cwd = os.getcwd()
                 os.chdir(openpose_dir)
+
+                # openpose command
                 # display & render_pose disable video output
                 command = '{0} --model_pose COCO --image_dir {1} --write_json {2} --display 0 --render_pose 0'.format(
                     openposebin, tmp_dir, tmp_dir)
@@ -268,12 +277,13 @@ class SoccerVideo:
             self.poses[basename] = poses
         return 0
 
-    # ---------------------------------------------------------------------------
+
+
     # copied from tabletop
     # - removes all poses with less keypoints than keypoint_thresh
     # - removes all poses where the neck doesn't pass the nms test (utils.nms.nms_wrapper)
     #   https://github.com/rbgirshick/fast-rcnn/blob/master/lib/utils/nms.py
-    # - (comment out) remove poses outside of field
+    # - remove poses outside of field
     def refine_poses(self, keypoint_thresh=10, score_thresh=0.5, neck_thresh=0.59, margin=0.0):
         W, H = 104.73, 67.74
 
@@ -311,7 +321,7 @@ class SoccerVideo:
 
             poses = [poses[ii] for ii in keep2]
 
-            # Remove poses outside of field (camera not implemented)
+            # Remove poses outside of field
             keep3 = []
             cam_mat = self.calib[basename]
             cam = cam_utils.Camera(
@@ -517,6 +527,7 @@ class SoccerVideo:
         cam = cam_utils.Camera(
             basename, cam_mat['A'], cam_mat['R'], cam_mat['T'], self.shape[0], self.shape[1])
 
+        # indices of the boxes to keep
         keep, __ = misc_utils.putting_objects_in_perspective(cam, boxes, min_height=min_height)
         boxes = boxes[keep, :]
         segms = [segms[i] for i in keep]
