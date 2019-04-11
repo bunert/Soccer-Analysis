@@ -32,6 +32,6 @@ for i in range(opt.cameras):
     db[i].get_boxes_from_detectron()
     db[i].dump_video('detections')
 
-    db[i].estimate_openpose(openpose_dir=opt.openpose_dir)
+    db[i].estimate_openposes(openpose_dir=opt.openpose_dir)
     db[i].refine_poses(keypoint_thresh=7, score_thresh=0.4, neck_thresh=0.4)
-    db[1].dump_video('poses')
+    db[i].dump_video('poses')

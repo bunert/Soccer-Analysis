@@ -1,4 +1,5 @@
 import numpy as np
+import os
 import utils.io2 as io
 import utils.camera as cam_utils
 import utils.draw as draw_utils
@@ -57,6 +58,7 @@ def _calibrate_camera_dist_transf(A, R, T, dist_transf, points3d):
     return A__, R__, T__
 
 
+# ~/Studium/BachelorThesis/code/data/field.png
 def _set_correspondences(img, field_img_path='./data/field.png'):
 
     field_img = io.imread(field_img_path)

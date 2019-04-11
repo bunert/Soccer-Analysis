@@ -4,6 +4,7 @@ from os.path import isfile, join, exists
 from os import listdir
 from tqdm import tqdm
 from soccer import calibration
+import utils.io2 as io
 import json
 import cv2
 import pickle
@@ -11,14 +12,14 @@ import glog
 import yaml
 import matplotlib
 import pycocotools.mask as mask_util
-# import utils
-#
-# import utils.io as io
-# import utils.misc as misc_utils
-# import utils.camera as cam_utils
-# import utils.draw as draw_utils
-# import utils.files as file_utils
-#
+import utils
+
+import utils.io2 as io
+import utils.misc as misc_utils
+import utils.camera as cam_utils
+import utils.draw as draw_utils
+import utils.files as file_utils
+
 from utils.nms.nms_wrapper import nms
 
 
@@ -70,7 +71,8 @@ class SoccerVideo:
         if exists(filename):
             with open(filename, 'rb') as f:
                 setattr(self, attr, pickle.load(f))
-        glog.info('{0}: {1}\tfrom {2}'.format(attr, exists(filename), file_utils.extract_basename(filename)[0]))
+        glog.info('{0}: {1}\tfrom {2}'.format(attr, exists(
+            filename), file_utils.extract_basename(filename)[0]))
 
     def digest_metadata(self):
 
@@ -104,7 +106,8 @@ class SoccerVideo:
             if not self.file_lists_match(listdir(join(self.path_to_dataset, 'calib'))):
 
                 # The first frame is estimated by manual clicking
-                manual_calib = join(self.path_to_dataset, 'calib', '{0}.npy'.format(self.frame_basenames[0]))
+                manual_calib = join(self.path_to_dataset, 'calib',
+                                    '{0}.npy'.format(self.frame_basenames[0]))
                 if exists(manual_calib):
                     calib_npy = np.load(manual_calib).item()
                     A, R, T = calib_npy['A'], calib_npy['R'], calib_npy['T']
@@ -127,13 +130,15 @@ class SoccerVideo:
                             vis = True
                         else:
                             vis = False
-                        A, R, T, __ = calibration.calibrate_from_initialization(img, coarse_mask, A, R, T, vis)
+                        A, R, T, __ = calibration.calibrate_from_initialization(
+                            img, coarse_mask, A, R, T, vis)
 
                         np.save(join(self.path_to_dataset, 'calib', '{0}'.format(self.frame_basenames[i])),
                                 {'A': A, 'R': R, 'T': T})
 
             for i, basename in enumerate(tqdm(self.frame_basenames)):
-                calib_npy = np.load(join(self.path_to_dataset, 'calib', '{0}.npy'.format(basename))).item()
+                calib_npy = np.load(join(self.path_to_dataset, 'calib',
+                                         '{0}.npy'.format(basename))).item()
                 A, R, T = calib_npy['A'], calib_npy['R'], calib_npy['T']
                 self.calib[basename] = {'A': A, 'R': R, 'T': T}
 
@@ -142,8 +147,8 @@ class SoccerVideo:
 
     # ---------------------------------------------------------------------------
     # customized from tabletop
-    # estimates the poses with openpose and saves them in class SoccerVideo.poses per frame
-    def estimate_openpose(self, openpose_dir='/path/to/openpose'):
+    # estimates the poses with openpose and saves them in class soccer.poses per frame
+    def estimate_openposes(self, redo=False, openpose_dir='~/installations/openpose', pad=150):
 
         pose_file_coarse = join(self.path_to_dataset, 'metadata', 'poses.p')
         if exists(pose_file_coarse) and not redo:
@@ -177,11 +182,14 @@ class SoccerVideo:
                     crop = img[y1:y2, x1:x2, :]
 
                     # Save crop
-                    cv2.imwrite(join(self.path_to_dataset, 'tmp', '{0}.jpg'.format(j)), crop[:, :, (2, 1, 0)] * 255)
+                    cv2.imwrite(join(self.path_to_dataset, 'tmp',
+                                     '{0}.jpg'.format(j)), crop[:, :, (2, 1, 0)] * 255)
 
                 cwd = os.getcwd()
                 os.chdir(openpose_dir)
-                command = '{0} --model_pose COCO --image_dir {1} --write_json {2}'.format(openposebin, tmp_dir, tmp_dir)
+                # display & render_pose disable video output
+                command = '{0} --model_pose COCO --image_dir {1} --write_json {2} --display 0 --render_pose 0'.format(
+                    openposebin, tmp_dir, tmp_dir)
 
                 os.system(command)
                 os.chdir(cwd)
@@ -204,7 +212,8 @@ class SoccerVideo:
                         # keypoints = np.array(data_json['data']).reshape(sz)
 
                         for k in range(n_persons):
-                            keypoints_ = np.array(data_json['people'][k]['pose_keypoints_2d']).reshape((18, 3))
+                            keypoints_ = np.array(
+                                data_json['people'][k]['pose_keypoints_2d']).reshape((18, 3))
                             keypoints_[:, 0] += x1
                             keypoints_[:, 1] += y1
                             poses.append(keypoints_)
@@ -234,11 +243,12 @@ class SoccerVideo:
         # openpose demo which gets executed with arguments as specified
         # model_pose COCO or default?
         # --maximize_positives: lower threshold -> more detections but less correct
-        command = '{0} --model_pose COCO --image_dir {1} --write_json {2} --maximize_positives'.format(openposebin, join(self.path_to_dataset, 'images'), tmp_dir)
+        command = '{0} --model_pose COCO --image_dir {1} --write_json {2} --maximize_positives'.format(
+            openposebin, join(self.path_to_dataset, 'images'), tmp_dir)
         os.system(command)
         os.chdir(cwd)
 
-            # achtung: format of output file?
+        # achtung: format of output file?
         for i, basename in enumerate(tqdm(self.frame_basenames)):
             poses = []
             with open(join(join(self.path_to_dataset, 'tmp'), '{0}_keypoints.json'.format(basename))) as data_file:
@@ -304,7 +314,8 @@ class SoccerVideo:
             # Remove poses outside of field (camera not implemented)
             keep3 = []
             cam_mat = self.calib[basename]
-            cam = cam_utils.Camera(basename, cam_mat['A'], cam_mat['R'], cam_mat['T'], self.shape[0], self.shape[1])
+            cam = cam_utils.Camera(
+                basename, cam_mat['A'], cam_mat['R'], cam_mat['T'], self.shape[0], self.shape[1])
             for ii in range(len(poses)):
                 kp3 = misc_utils.lift_keypoints_in_3d(cam, poses[ii])
                 if (-W / 2. - margin) <= kp3[1, 0] <= (W / 2. + margin) and (-H / 2. - margin) <= kp3[1, 2] <= (H / 2. + margin):
@@ -313,6 +324,16 @@ class SoccerVideo:
             poses = [poses[ii] for ii in keep3]
 
             self.poses[basename] = poses
+
+    def file_lists_match(self, list2):
+        list2 = [file_utils.extract_basename(f)[0] for f in list2]
+        hash_table = dict.fromkeys(list2)
+        all_included = True
+        for i in self.frame_basenames:
+            if i not in hash_table:
+                all_included = False
+                break
+        return all_included
 
     def dump_video(self, vidtype, scale=4, mot_tracks=None, one_color=True):
         if vidtype not in ['calib', 'poses', 'detections', 'tracks', 'mask']:
@@ -323,9 +344,10 @@ class SoccerVideo:
 
         glog.info('Dumping {0} video'.format(vidtype))
 
-        fourcc = cv2.VideoWriter_fourcc(*'MP4V')
+        fourcc = cv2.VideoWriter_fourcc(*'mp4v')  # MP4V
         out_file = join(self.path_to_dataset, '{0}.mp4'.format(vidtype))
-        out = cv2.VideoWriter(out_file, fourcc, 20.0, (self.shape[1] // scale, self.shape[0] // scale))
+        out = cv2.VideoWriter(out_file, fourcc, 20.0,
+                              (self.shape[1] // scale, self.shape[0] // scale))
 
         font = cv2.FONT_HERSHEY_SIMPLEX
         cmap = matplotlib.cm.get_cmap('hsv')
@@ -333,6 +355,7 @@ class SoccerVideo:
             n_tracks = max(np.unique(mot_tracks[:, 1]))
 
         for i, basename in enumerate(tqdm(self.frame_basenames)):
+
             img = self.get_frame(i, dtype=np.uint8)
 
             if vidtype == 'poses':
@@ -342,10 +365,13 @@ class SoccerVideo:
 
             if vidtype == 'calib':
                 # Calib
-                cam = cam_utils.Camera('tmp', self.calib[basename]['A'], self.calib[basename]['R'], self.calib[basename]['T'], self.shape[0], self.shape[1])
+                cam = cam_utils.Camera('tmp', self.calib[basename]['A'], self.calib[basename]
+                                       ['R'], self.calib[basename]['T'], self.shape[0], self.shape[1])
                 canvas, mask = draw_utils.draw_field(cam)
-                canvas = cv2.dilate(canvas.astype(np.uint8), np.ones((15, 15), dtype=np.uint8)).astype(float)
-                img = img * (1 - canvas)[:, :, None] + np.dstack((canvas*255, np.zeros_like(canvas), np.zeros_like(canvas)))
+                canvas = cv2.dilate(canvas.astype(np.uint8), np.ones(
+                    (15, 15), dtype=np.uint8)).astype(float)
+                img = img * (1 - canvas)[:, :, None] + np.dstack((canvas *
+                                                                  255, np.zeros_like(canvas), np.zeros_like(canvas)))
 
             elif vidtype == 'detections':
                 # Detection
@@ -356,9 +382,11 @@ class SoccerVideo:
                     ball = np.zeros((0, 4), dtype=np.int32)
 
                 for j in range(bbox.shape[0]):
-                    cv2.rectangle(img, (bbox[j, 0], bbox[j, 1]), (bbox[j, 2], bbox[j, 3]), (255, 0, 0), 10)
+                    cv2.rectangle(img, (bbox[j, 0], bbox[j, 1]),
+                                  (bbox[j, 2], bbox[j, 3]), (255, 0, 0), 10)
                 for j in range(ball.shape[0]):
-                    cv2.rectangle(img, (ball[j, 0], ball[j, 1]), (ball[j, 2], ball[j, 3]), (0, 255, 0), 10)
+                    cv2.rectangle(img, (ball[j, 0], ball[j, 1]),
+                                  (ball[j, 2], ball[j, 3]), (0, 255, 0), 10)
 
             elif vidtype == 'tracks':
                 # Tracks
@@ -370,7 +398,8 @@ class SoccerVideo:
                     clr = cmap(track_id / float(n_tracks))
                     cv2.rectangle(img, (int(x), int(y)), (int(x + w), int(y + h)),
                                   (clr[0] * 255, clr[1] * 255, clr[2] * 255), 10)
-                    cv2.putText(img, str(int(track_id)), (int(x), int(y)), font, 2, (255, 255, 255), 2, cv2.LINE_AA)
+                    cv2.putText(img, str(int(track_id)), (int(x), int(y)),
+                                font, 2, (255, 255, 255), 2, cv2.LINE_AA)
 
             elif vidtype == 'mask':
                 # Mask
@@ -400,10 +429,117 @@ class SoccerVideo:
 
             for i, basename in enumerate(tqdm(self.frame_basenames)):
                 with open(join(self.path_to_dataset, 'detectron', '{0}.yml'.format(basename)), 'rb') as stream:
-                    data = yaml.load(stream)
+                    #data = yaml.load(stream)
+                    data = yaml.unsafe_load(stream)
                 boxes, classes, segms = data['boxes'], data['classes'], data['segms']
 
-                self.detectron[basename] = {'boxes': boxes, 'segms': segms, 'keyps': None, 'classes': classes}
+                self.detectron[basename] = {'boxes': boxes,
+                                            'segms': segms, 'keyps': None, 'classes': classes}
 
             with open(detectron_file, 'wb') as f:
                 pickle.dump(self.detectron, f)
+
+    def get_number_of_players(self):
+
+        players_in_frame = np.zeros((self.n_frames,))
+        for i, basename in enumerate(self.frame_basenames):
+            players_in_frame[i] = len(self.bbox[basename])
+
+        return players_in_frame
+
+    def get_boxes_in_2d(self):
+        boxes2d = []
+        for i, basename in enumerate(self.frame_basenames):
+            bbox = self.bbox[basename]
+            boxes2d.append(bbox[:, :4].reshape(bbox.shape[0], 2, 2))
+        return boxes2d
+
+    def get_keypoints_in_2d(self):
+        keypoints = []
+        for i, basename in enumerate(self.frame_basenames):
+            kp = self.poses[basename]
+            keypoints.append(kp)
+        return keypoints
+
+    def get_boxes_in_3d(self):
+        boxes3d = []
+        for i, basename in enumerate(self.frame_basenames):
+            bbox = self.bbox[basename]
+            cam_mat = self.calib[basename]
+            cam = cam_utils.Camera(
+                basename, cam_mat['A'], cam_mat['R'], cam_mat['T'], self.shape[0], self.shape[1])
+            bbox3d = misc_utils.lift_box_in_3d(cam, bbox)
+            boxes3d.append(bbox3d)
+        return boxes3d
+
+    def get_mask_from_detectron(self, frame_number):
+        return io.imread(join(self.path_to_dataset, 'detectron', self.frame_basenames[frame_number]+'.png'))[:, :, 0]
+
+    def get_ball_from_detectron(self, thresh=0.0, nms_thresh=0.5):
+        for i, basename in enumerate(tqdm(self.frame_basenames)):
+            data = self.detectron[basename]
+            boxes, segms, keyps, classes = data['boxes'], data['segms'], data['keyps'], data['classes']
+            valid = (boxes[:, 4] > thresh)*([j == 33 for j in classes])
+            boxes = boxes[valid, :]
+
+            valid_nms = nms(boxes.astype(np.float32), nms_thresh)
+            boxes = boxes[valid_nms, :]
+
+            self.ball[basename] = boxes
+
+    def get_color_from_detections(self, frame_number):
+        basename = self.frame_basenames[frame_number]
+        img = self.get_frame(frame_number)
+        boxes = self.bbox[basename]
+        n_boxes = boxes.shape[0]
+        box_color = np.zeros((n_boxes, 3))
+        segms = self.detectron[basename]['segms']
+
+        for i in range(n_boxes):
+            masks = mask_util.decode(segms[i])
+            II, JJ = (masks > 0).nonzero()
+            crop = img[II, JJ, :].reshape((-1, 3))
+            box_color[i, :] = np.mean(crop, axis=0)
+        return box_color
+
+    def refine_detectron(self, basename, score_thresh=0.9, nms_thresh=0.5, min_height=0.0, min_area=200):
+
+        data = self.detectron[basename]
+        boxes, segms, keyps, classes = data['boxes'], data['segms'], data['keyps'], data['classes']
+
+        valid = (boxes[:, 4] > score_thresh) * ([j == 1 for j in classes])
+        valid = (valid == True).nonzero()[0]
+        boxes = boxes[valid, :]
+        segms = [segms[i] for i in valid]
+        classes = [classes[i] for i in valid]
+
+        cam_mat = self.calib[basename]
+        cam = cam_utils.Camera(
+            basename, cam_mat['A'], cam_mat['R'], cam_mat['T'], self.shape[0], self.shape[1])
+
+        keep, __ = misc_utils.putting_objects_in_perspective(cam, boxes, min_height=min_height)
+        boxes = boxes[keep, :]
+        segms = [segms[i] for i in keep]
+        classes = [classes[i] for i in keep]
+
+        valid_nms = nms(boxes.astype(np.float32), nms_thresh)
+        boxes = boxes[valid_nms, :]
+        segms = [segms[i] for i in valid_nms]
+        classes = [classes[i] for i in valid_nms]
+
+        areas = (boxes[:, 2] - boxes[:, 0]) * (boxes[:, 3] - boxes[:, 1])
+        valid_area = (areas > min_area).nonzero()[0]
+        boxes = boxes[valid_area, :]
+        segms = [segms[i] for i in valid_area]
+        classes = [classes[i] for i in valid_area]
+
+        return boxes, segms, keyps, classes
+
+    def get_boxes_from_detectron(self, score_thresh=0.9, nms_thresh=0.5, min_height=0.0, min_area=200):
+
+        for i, basename in enumerate(tqdm(self.frame_basenames)):
+
+            boxes, segms, keyps, classes = self.refine_detectron(basename, score_thresh=score_thresh,
+                                                                 nms_thresh=nms_thresh, min_height=min_height,
+                                                                 min_area=min_area)
+            self.bbox[basename] = boxes
