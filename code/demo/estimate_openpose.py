@@ -23,6 +23,7 @@ opt, _ = parser.parse_known_args()
 
 # initialize SoccerVideo for every camera
 db = []
+
 for i in range(opt.cameras):
     db.append(soccer.SoccerVideo(join(opt.path_to_data, 'camera{0}'.format(i))))
 

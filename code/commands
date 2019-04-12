@@ -2,31 +2,31 @@
 # Detectron:
 ################################################
 
-# out of memory:
-python2 tools/infer_simple.py \
-    --cfg configs/12_2017_baselines/e2e_mask_rcnn_R-101-FPN_2x.yaml \
+  # out of memory:
+  python2 tools/infer_simple.py \
+      --cfg configs/12_2017_baselines/e2e_mask_rcnn_R-101-FPN_2x.yaml \
+      --output-dir ~/Data/camera0/detectron \
+      --image-ext jpg \
+      --wts https://dl.fbaipublicfiles.com/detectron/35861858/12_2017_baselines/e2e_mask_rcnn_R-101-FPN_2x.yaml.02_32_51.SgT4y1cO/output/train/coco_2014_train:coco_2014_valminusminival/generalized_rcnn/model_final.pkl \
+      ~/Data/camera0/images/
+            https://dl.fbaipublicfiles.com/detectron/35861858/12_2017_baselines/e2e_mask_rcnn_R-101-FPN_2x.yaml.02_32_51.SgT4y1cO/output/train/coco_2014_train3Acoco_2014_valminusminival/generalized_rcnn/model_final.pkl
+            https://dl.fbaipublicfiles.com/detectron/35861858/12_2017_baselines/e2e_mask_rcnn_R-101-FPN_2x.yaml.02_32_51.SgT4y1cO/output/train/coco_2014_train:3Acoco_2014_valminusminival/generalized_rcnn/model_final.pkl
+
+  # for smaller memory (R-50-FPN model) working:
+  python2 tools/infer_simple.py \
+    --cfg configs/12_2017_baselines/e2e_faster_rcnn_R-50-FPN_2x.yaml \
     --output-dir ~/Data/camera0/detectron \
     --image-ext jpg \
-    --wts https://dl.fbaipublicfiles.com/detectron/35861858/12_2017_baselines/e2e_mask_rcnn_R-101-FPN_2x.yaml.02_32_51.SgT4y1cO/output/train/coco_2014_train:coco_2014_valminusminival/generalized_rcnn/model_final.pkl \
+    --wts https://dl.fbaipublicfiles.com/detectron/35857389/12_2017_baselines/e2e_faster_rcnn_R-50-FPN_2x.yaml.01_37_22.KSeq0b5q/output/train/coco_2014_train%3Acoco_2014_valminusminival/generalized_rcnn/model_final.pkl \
     ~/Data/camera0/images/
-          https://dl.fbaipublicfiles.com/detectron/35861858/12_2017_baselines/e2e_mask_rcnn_R-101-FPN_2x.yaml.02_32_51.SgT4y1cO/output/train/coco_2014_train3Acoco_2014_valminusminival/generalized_rcnn/model_final.pkl
-          https://dl.fbaipublicfiles.com/detectron/35861858/12_2017_baselines/e2e_mask_rcnn_R-101-FPN_2x.yaml.02_32_51.SgT4y1cO/output/train/coco_2014_train:3Acoco_2014_valminusminival/generalized_rcnn/model_final.pkl
 
-# for smaller memory (R-50-FPN model) working:
-python2 tools/infer_simple.py \
-  --cfg configs/12_2017_baselines/e2e_faster_rcnn_R-50-FPN_2x.yaml \
-  --output-dir ~/Data/camera0/detectron \
-  --image-ext jpg \
-  --wts https://dl.fbaipublicfiles.com/detectron/35857389/12_2017_baselines/e2e_faster_rcnn_R-50-FPN_2x.yaml.01_37_22.KSeq0b5q/output/train/coco_2014_train%3Acoco_2014_valminusminival/generalized_rcnn/model_final.pkl \
-  ~/Data/camera0/images/
-
-# Detectron (faster RCNN) -> no mask output
-python2 tools/infer_simple.py \
-  --cfg configs/12_2017_baselines/e2e_faster_rcnn_R-50-FPN_2x.yaml \
-  --output-dir ~/Data/camera0/detectron \
-  --image-ext jpg \
-  --wts https://dl.fbaipublicfiles.com/detectron/35857389/12_2017_baselines/e2e_faster_rcnn_R-50-FPN_2x.yaml.01_37_22.KSeq0b5q/output/train/coco_2014_train%3Acoco_2014_valminusminival/generalized_rcnn/model_final.pkl \
-  ~/Data/camera0/images/
+  # Detectron (faster RCNN) -> no mask output
+  python2 tools/infer_simple.py \
+    --cfg configs/12_2017_baselines/e2e_faster_rcnn_R-50-FPN_2x.yaml \
+    --output-dir ~/Data/camera0/detectron \
+    --image-ext jpg \
+    --wts https://dl.fbaipublicfiles.com/detectron/35857389/12_2017_baselines/e2e_faster_rcnn_R-50-FPN_2x.yaml.01_37_22.KSeq0b5q/output/train/coco_2014_train%3Acoco_2014_valminusminival/generalized_rcnn/model_final.pkl \
+    ~/Data/camera0/images/
 
 ################################################
 # Workflow:
@@ -45,11 +45,11 @@ python2 tools/infer_simple.py \
 # calibrate camera
 cd ~/Studium/BachelorThesis/code
 # take exactly 4 points (good: intersection of middle line with side lines and two other points of each sideline mirrored)
-python3 calibrate_video.py --cameras 1
+python3 demo/calibrate_video.py --cameras 1
 
 # estimate pose
 # get_boxes_from_detectron method needs camera params, uncomment if above cmd works
-python3 estimate_openpose.py --cameras 1 --openpose_dir ~/installations/openpose
+python3 demo/estimate_openpose.py --cameras 1 --openpose_dir ~/installations/openpose
 
 
 ################################################
@@ -66,9 +66,9 @@ ssh bunert@178.195.249.45 -p 200
 # remmina:
 test2
 
-# scp (copy files)
+# scp - copying files
 scp -P 200 bunert@178.195.249.45:/home/bunert/Data/camera0/detectron/* /home/bunert/Downloads/detectron
 
-# sshfs
+# sshfs - mount remote directory
 sshfs bunert@178.195.249.45:/home/bunert /home/bunert/remote/ -C -p 200
 fusermount -u /home/bunert/remote

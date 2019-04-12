@@ -45,7 +45,12 @@ class Camera:
 * remarks:
   * using the existing tracking system?
 
+## Prerequisite
+* [Detectron](https://github.com/facebookresearch/Detectron)
+* [Openpose](https://github.com/CMU-Perceptual-Computing-Lab/openpose)
 
+#### Pythonpath remark
+The local `utils` directory is used for the python3 commands so include this github directory to your python3 path. While detectron uses python2 but also got a `Detectron/detectron/utils` directory which leads to import errors when the `Detectron` directory is also added to the python3 path.
 
 ## Pipeline
 * Synchronize the videos
@@ -70,17 +75,17 @@ Using an end-to-end trained Mask R-CNN model with a ResNet-50-FPN backbone from 
 ```bash
 # set path variables (adjust for own system)
 DETECTRON=$HOME/installations/Detectron
-DATA=$HOME/Data/camera0
+CAM=$HOME/Data/camera0
 
 
 mkdir $DATA/detectron
 cd $DETECTRON
 python2 tools/infer_simple.py \
   --cfg configs/12_2017_baselines/e2e_mask_rcnn_R-50-FPN_2x.yaml \
-  --output-dir $DATA/detectron \
+  --output-dir $CAM/detectron \
   --image-ext jpg \
   --wts https://dl.fbaipublicfiles.com/detectron/35859007/12_2017_baselines/e2e_mask_rcnn_R-50-FPN_2x.yaml.01_49_07.By8nQcCH/output/train/coco_2014_train%3Acoco_2014_valminusminival/generalized_rcnn/model_final.pkl \
-  $DATA/images/
+  $CAM/images/
 ```
 
 
@@ -90,10 +95,11 @@ To run the calibration step, you have to manually select four pairs of correspon
 ```bash
 # set path variables (adjust for own system)
 PROJ=$HOME/Studium/BachelorThesis/code
+DATA=$HOME/Data
 cd $PROJ
 
 # set --cameras to the number of different cameras
-python3 calibrate_video.py \
+python3 demo/calibrate_video.py \
   --path_to_data $DATA \
   --cameras 1
 ```
@@ -112,7 +118,7 @@ Run the `openpose.bin` on the boxes obtained from detectron. The demo from openp
 # set path variables (adjust for own system)
 OPENPOSE=$HOME/installations/openpose
 
-python3 estimate_openpose.py \
+python3 demo/estimate_openpose.py \
   --cameras 1 \
   --openpose_dir $OPENPOSE \
   --path_to_data $DATA

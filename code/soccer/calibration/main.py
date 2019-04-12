@@ -1,6 +1,6 @@
 import numpy as np
 import os
-import utils.io2 as io
+import utils.io as io
 import utils.camera as cam_utils
 import utils.draw as draw_utils
 import utils.image as image_utils
@@ -172,7 +172,8 @@ def calibrate_from_initialization(img, mask, A_init, R_init, T_init, edge_sfacto
 
     h, w = img.shape[:2]
 
-    edges = image_utils.robust_edge_detection(cv2.resize(img, None, fx=edge_sfactor, fy=edge_sfactor))
+    edges = image_utils.robust_edge_detection(
+        cv2.resize(img, None, fx=edge_sfactor, fy=edge_sfactor))
 
     edges = cv2.resize(edges, None, fx=1. / edge_sfactor, fy=1. / edge_sfactor)
     edges = cv2.Canny(edges.astype(np.uint8) * 255, 100, 200) / 255.0

@@ -12,8 +12,7 @@ import yaml
 import matplotlib
 import pycocotools.mask as mask_util
 import utils
-
-import utils.io2 as io
+import utils.io as io
 import utils.misc as misc_utils
 import utils.camera as cam_utils
 import utils.draw as draw_utils
@@ -277,13 +276,12 @@ class SoccerVideo:
             self.poses[basename] = poses
         return 0
 
-
-
     # copied from tabletop
     # - removes all poses with less keypoints than keypoint_thresh
     # - removes all poses where the neck doesn't pass the nms test (utils.nms.nms_wrapper)
     #   https://github.com/rbgirshick/fast-rcnn/blob/master/lib/utils/nms.py
     # - remove poses outside of field
+
     def refine_poses(self, keypoint_thresh=10, score_thresh=0.5, neck_thresh=0.59, margin=0.0):
         W, H = 104.73, 67.74
 
