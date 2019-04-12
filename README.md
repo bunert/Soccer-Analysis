@@ -48,15 +48,21 @@ class Camera:
 
 
 ## Pipeline
+* Synchronize the videos
+* Prepare Keypoints
+  * Detectron for bounding boxes
+  * Calibrate cameras
+  * Estimate poses
 
-### synchronize the videos
+
+### Synchronize the videos
 How?
 
 options:
 * [synchronization for multi-perspective videos in the wild](http://www.cs.cmu.edu/~poyaoh/data/ICASSP_2017.pdf)
 * [Elan](https://www.mpi.nl/corpus/html/elan/ch01s02s04.html)
 
-### [Detectron](https://github.com/facebookresearch/Detectron)
+### Detect bounding Boxes [(Detectron github)](https://github.com/facebookresearch/Detectron)
 remark: adjust for multiple cameras
 
 Using an end-to-end trained Mask R-CNN model with a ResNet-50-FPN backbone from the [model zoo](https://github.com/facebookresearch/Detectron/blob/master/MODEL_ZOO.md). Detectron should automatically download the model from the URL specified by the --wts argument. The --cfg arguments corresponds to the configuration of the baseline, all those configurations are located in the detectron project directory `configs/12_2017_baselines`.
@@ -87,17 +93,19 @@ PROJ=$HOME/Studium/BachelorThesis/code
 cd $PROJ
 
 # set --cameras to the number of different cameras
-python3 calibrate_video.py --path_to_data $DATA --cameras 1
+python3 calibrate_video.py \
+  --path_to_data $DATA \
+  --cameras 1
 ```
 
-### Estimate Poses
-Run the `openpose.bin` on the crops which we got from the detectron. The demo from openpose runs with the following arguments (can be changed in main.py):
+### Estimate Poses [(openpose github)](https://github.com/CMU-Perceptual-Computing-Lab/openpose)
+Run the `openpose.bin` on the boxes obtained from detectron. The demo from openpose runs with the following arguments (can be changed in main.py):
 ```
 --model_pose COCO --image_dir {1} --write_json {2} --display 0 --render_pose 0
 ```
-* --model_pose is the model to use (affects number of keypoints)
-* {1} and {2} is a temporary directory in the `$DATA` folder.
-* --display 0 --render_pose 0 disables the video output
+* --model_pose: used model (affects number of keypoints)
+* {1} and {2}: temporary directory in the `$DATA` folder.
+* --display 0 --render_pose 0: disables the video output
 
 
 ```bash
