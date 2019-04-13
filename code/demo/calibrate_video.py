@@ -18,7 +18,6 @@ opt, _ = parser.parse_known_args()
 
 
 db = []
-
 for i in range(opt.cameras):
     db.append(soccer.SoccerVideo(join(opt.path_to_data, 'camera{0}'.format(i))))
     db[i].gather_detectron()
