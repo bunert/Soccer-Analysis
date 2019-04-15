@@ -3,9 +3,7 @@
 ## Problems
 
 ### Todo
-* try to order the mess with utils.io (copy folder from soccerontable to github repo)
 * synchronize Part
-* how to extract the camera matrices from video calibration?
 * implement Kalman Filter
 
 
