@@ -1,4 +1,7 @@
-# Bachelor Thesis Overview
+# Soccer Analysis
+
+------------------------------------------------------------
+
 
 ## Problems
 
@@ -10,12 +13,26 @@
 ### Meeting
 
 #### Inputs
+
+
+#### questions
+Wie letztes mal erwähnt: wo den Schwerpunkt setzen?
+
+next:
+* Kalman Filter vorbereiten/implementieren
+* synchronisierung vorbereiten
+
+Visualisierung:
+* später die 3D scene visualisieren, tipps für library?
+* zum Testen des Kalman Filter erstmal mit plotly...
+
+------------------------------------------------------------
+
+## Notizen:
 * alternative Kalman Filter: particle filtering
 * SMPL realistic 3D model of human body
 
-#### questions
-
-###### calibration:
+#### calibration parameters:
 
 ```python
 cam = cam_utils.Camera(
@@ -35,13 +52,34 @@ class Camera:
         self.T = np.zeros((3, 1))
 ```
 
-###### Kalman Filter:
-* implement Kalman Filter (for all players -> player tracking needed?)
+#### Kalman-Filter
+
+#### implementation
+[pykalman - python implementation](https://pykalman.github.io/)
+
+implement: [guide](http://www.kostasalexis.com/the-kalman-filter.html)
+
+implement Kalman Filter (for all players -> player tracking needed?)
 * problems:
   * players entering and leaving the screen
   * player in a camera but not in the other cameras how to handle
 * remarks:
   * using the existing tracking system?
+
+
+
+### Display result
+Is the goal to display the 3D-keypoints on a virtual soccer field?
+
+### evaluation/statistics
+further questions:
+* to evaluate the visualization necessary?
+* how to track the ball?
+* how to track the player's identity
+
+
+------------------------------------------------------------
+
 
 ## Prerequisite
 * [Detectron](https://github.com/facebookresearch/Detectron)
@@ -51,21 +89,22 @@ class Camera:
 The local `utils` directory is used for the python3 commands so include this github directory to your python3 path. While detectron uses python2 but also got a `Detectron/detectron/utils` directory which leads to import errors when the `Detectron` directory is also added to the python3 path.
 
 ## Pipeline
-* Synchronize the videos
-* Prepare Keypoints
+1. Synchronize the videos_
+2. Prepare Keypoints
   * Detectron for bounding boxes
   * Calibrate cameras
   * Estimate poses
 
 
-### Synchronize the videos
+### 1. Synchronize the videos
 How?
 
 options:
 * [synchronization for multi-perspective videos in the wild](http://www.cs.cmu.edu/~poyaoh/data/ICASSP_2017.pdf)
 * [Elan](https://www.mpi.nl/corpus/html/elan/ch01s02s04.html)
 
-### Detect bounding Boxes [(Detectron github)](https://github.com/facebookresearch/Detectron)
+### 2. Prepare Keypoints
+#### Detect bounding Boxes [(Detectron github)](https://github.com/facebookresearch/Detectron)
 remark: adjust for multiple cameras
 
 Using an end-to-end trained Mask R-CNN model with a ResNet-50-FPN backbone from the [model zoo](https://github.com/facebookresearch/Detectron/blob/master/MODEL_ZOO.md). Detectron should automatically download the model from the URL specified by the --wts argument. The --cfg arguments corresponds to the configuration of the baseline, all those configurations are located in the detectron project directory `configs/12_2017_baselines`.
@@ -87,7 +126,7 @@ python2 tools/infer_simple.py \
 ```
 
 
-### Calibrate cameras
+#### Calibrate cameras
 To run the calibration step, you have to manually select four pairs of correspondences. Good practice is to take the intersection of the middle line and the outside line and additionally a point on the outside line. After placed in each image four points close the window. Now choose the better estimation (Save cv - left, Save opt - right) or discard and try again.
 
 ```bash
@@ -121,29 +160,3 @@ python3 demo/estimate_openpose.py \
   --openpose_dir $OPENPOSE \
   --path_to_data $DATA
 ```
-
-
-### 4. Kalman-Filter
-
-#### 4.1. implementation
-[pykalman - python implementation](https://pykalman.github.io/)
-
-implement: [guide](http://www.kostasalexis.com/the-kalman-filter.html)
-
-Problems:
-* what are exactly the inputs?
-    * Keypoints from openpose
-    * corresponding camera parameters
-* what's the output?
-    * 3D parameters in space? how to map to the soccer field?
-
-
-
-### 5. Display result
-Is the goal to display the 3D-keypoints on a virtual soccer field?
-
-### 6. evaluation/statistics
-further questions:
-* to evaluate the visualization necessary?
-* how to track the ball?
-* how to track the player's identity
