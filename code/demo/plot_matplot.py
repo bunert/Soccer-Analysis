@@ -14,6 +14,10 @@ import matplotlib.patches as mpatches
 import mpl_toolkits.mplot3d.art3d as art3d
 from tqdm import tqdm
 
+################################################################
+### plot the soccer field with matplot (just as backup) 
+################################################################
+
 # CMD Line arguments
 parser = argparse.ArgumentParser(description='Estimate the poses')
 # --path_to_data: where the images are

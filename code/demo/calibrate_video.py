@@ -13,7 +13,7 @@ parser = argparse.ArgumentParser(description='Calibrate a soccer video')
 # --path_to_data: where the images are
 parser.add_argument('--path_to_data', default='/home/bunert/Data', help='path')
 # --cameras: number of cameras
-parser.add_argument('--cameras', default=8, type=int, help='path')
+parser.add_argument('--cameras', default=1, type=int, help='path')
 opt, _ = parser.parse_known_args()
 
 

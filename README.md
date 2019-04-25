@@ -141,7 +141,7 @@ python3 demo/calibrate_video.py \
   --cameras 1
 ```
 
-### Estimate Poses [(openpose github)](https://github.com/CMU-Perceptual-Computing-Lab/openpose)
+#### Estimate Poses [(openpose github)](https://github.com/CMU-Perceptual-Computing-Lab/openpose)
 Run the `openpose.bin` on the boxes obtained from detectron. The demo from openpose runs with the following arguments (can be changed in main.py):
 ```
 --model_pose COCO --image_dir {1} --write_json {2} --display 0 --render_pose 0

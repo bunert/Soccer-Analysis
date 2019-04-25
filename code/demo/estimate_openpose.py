@@ -17,7 +17,7 @@ parser.add_argument('--path_to_data', default='/home/bunert/Data', help='path')
 # --openpose_dir: where the openpose directory is (./build/examples/openpose/openpose.bin)
 parser.add_argument('--openpose_dir', default='/home/bunert/installations/openpose', help='path')
 # --cameras: number of cameras
-parser.add_argument('--cameras', default=8, type=int, help='path')
+parser.add_argument('--cameras', default=1, type=int, help='path')
 
 opt, _ = parser.parse_known_args()
 
