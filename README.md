@@ -12,15 +12,18 @@
 
 ### Meeting
 
-#### Inputs
+#### Detectron so slow:
+When running inference on your own high-resolution images, Mask R-CNN may be slow simply because substantial time is spent upsampling the predicted masks to the original image resolution (this has not been optimized). You can diagnose this issue if the misc_mask time reported by tools/infer_simple.py is high (e.g., much more than 20-90ms). The solution is to first resize your images such that the short side is around 600-800px (the exact choice does not matter) and then run inference on the resized image.
 
+#### Inputs
+- frames extrahieren, verschiedene frame rates problem???
 
 #### questions
-Wie letztes mal erwähnt: wo den Schwerpunkt setzen?
 
 next:
-* Kalman Filter vorbereiten/implementieren
-* synchronisierung vorbereiten
+* Kalman Filter vorbereiten/implementieren?
+* synchronisierung vorbereiten soweit wie möglich
+* Euler
 
 Visualisierung:
 * später die 3D scene visualisieren, tipps für library?
@@ -117,7 +120,8 @@ CAM=$HOME/Data/camera0
 
 mkdir $DATA/detectron
 cd $DETECTRON
-python2 tools/infer_simple.py \
+###
+python2 tools/infer_subimages.py \
   --cfg configs/12_2017_baselines/e2e_mask_rcnn_R-50-FPN_2x.yaml \
   --output-dir $CAM/detectron \
   --image-ext jpg \
