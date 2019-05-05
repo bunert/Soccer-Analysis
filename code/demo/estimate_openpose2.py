@@ -20,7 +20,7 @@ parser.add_argument('--openpose_dir', default='/home/bunert/installations/openpo
 opt, _ = parser.parse_known_args()
 
 # initialize SoccerVideo for every camera
-db = soccer.SoccerVideo(join(opt.path_to_data))
+db = soccer.SoccerVideo(opt.path_to_data)
 # what exactly do those?
 db.gather_detectron()
 db.digest_metadata()

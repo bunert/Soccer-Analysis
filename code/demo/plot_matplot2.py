@@ -15,7 +15,7 @@ import mpl_toolkits.mplot3d.art3d as art3d
 from tqdm import tqdm
 
 ################################################################
-### plot the soccer field with matplot (just as backup)
+# plot the soccer field with matplot (just as backup)
 ################################################################
 
 # CMD Line arguments
@@ -26,7 +26,7 @@ parser.add_argument('--path_to_data', default='/home/bunert/Data', help='path')
 opt, _ = parser.parse_known_args()
 
 # load corresponding metadata
-db = soccer.SoccerVideo(join(opt.path_to_data))
+db = soccer.SoccerVideo(opt.path_to_data)
 db.digest_metadata()
 
 # ------------------------------------------------------------------------------
@@ -79,18 +79,21 @@ def get_field_points():
 
 
 def draw_box(b):
-    ax.plot([b.item(0),b.item(3)],[0,0],zs=[b.item(2),b.item(5)],color='black')
-    ax.plot([b.item(0),b.item(9)],[0,0],zs=[b.item(2),b.item(11)],color='black')
-    ax.plot([b.item(3),b.item(6)],[0,0],zs=[b.item(5),b.item(8)],color='black')
-    ax.plot([b.item(6),b.item(9)],[0,0],zs=[b.item(8),b.item(11)],color='black')
+    ax.plot([b.item(0), b.item(3)], [0, 0], zs=[b.item(2), b.item(5)], color='black')
+    ax.plot([b.item(0), b.item(9)], [0, 0], zs=[b.item(2), b.item(11)], color='black')
+    ax.plot([b.item(3), b.item(6)], [0, 0], zs=[b.item(5), b.item(8)], color='black')
+    ax.plot([b.item(6), b.item(9)], [0, 0], zs=[b.item(8), b.item(11)], color='black')
+
 
 def draw_line(b):
-    ax.plot([b.item(0),b.item(3)],[0,0],zs=[b.item(2),b.item(5)],color='black')
+    ax.plot([b.item(0), b.item(3)], [0, 0], zs=[b.item(2), b.item(5)], color='black')
+
 
 def draw_middlecircle():
     p = Circle((0, 0), 9.15, fill=False)
     ax.add_patch(p)
     art3d.pathpatch_2d_to_3d(p, z=0, zdir="y")
+
 
 def draw_lefthalf_circle():
 
@@ -112,20 +115,22 @@ def draw_righthalf_circle():
     ax.add_patch(poly)
     art3d.pathpatch_2d_to_3d(poly, z=0, zdir="y")
 
+
 def plot_field():
     field_list = get_field_points()
     for i in range(len(field_list)):
-        if (i<=4):
+        if (i <= 4):
             draw_box(field_list[i])
-        elif (i==5):
+        elif (i == 5):
             draw_line(field_list[i])
     draw_lefthalf_circle()
     draw_righthalf_circle()
     draw_middlecircle()
 
+
 # get camera position
 cam = cam_utils.Camera('camera0', db.calib['00118']['A'], db.calib['00118']
-                  ['R'], db.calib['00118']['T'], db.shape[0], db.shape[1])
+                       ['R'], db.calib['00118']['T'], db.shape[0], db.shape[1])
 
 # initialize figure
 fig = plt.figure()
@@ -142,21 +147,20 @@ ax.scatter(x, y, z, label='camera0', marker='o')
 field = io.imread('./demo/data/demo_field.png')
 
 
-
 plot_field()
 
 # set axis names and position
 ax.set_xlabel('X', fontsize=25, rotation=0)
 ax.set_ylabel('Y', fontsize=25, rotation=0)
 ax.set_zlabel('Z', fontsize=25, rotation=0)
-ax.xaxis._axinfo['juggled'] = (0,0,0)
-ax.yaxis._axinfo['juggled'] = (1,1,1)
-ax.zaxis._axinfo['juggled'] = (2,2,2)
+ax.xaxis._axinfo['juggled'] = (0, 0, 0)
+ax.yaxis._axinfo['juggled'] = (1, 1, 1)
+ax.zaxis._axinfo['juggled'] = (2, 2, 2)
 
 # scale
-ax.set_xlim3d(-100,100)
-ax.set_ylim3d(0,200)
-ax.set_zlim3d(-100,100)
+ax.set_xlim3d(-100, 100)
+ax.set_ylim3d(0, 200)
+ax.set_zlim3d(-100, 100)
 
 
 # view init

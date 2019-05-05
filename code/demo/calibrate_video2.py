@@ -15,7 +15,7 @@ parser.add_argument('--path_to_data', default='/home/bunert/Data/camera0', help=
 # --cameras: number of cameras
 
 
-db = soccer.SoccerVideo(join(opt.path_to_data))
+db = soccer.SoccerVideo(opt.path_to_data)
 db.gather_detectron()
 db.digest_metadata()
 file_utils.mkdir(os.path.join(db.path_to_dataset, 'calib'))

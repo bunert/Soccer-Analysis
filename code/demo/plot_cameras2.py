@@ -20,7 +20,7 @@ parser.add_argument('--path_to_data', default='/home/bunert/Data/camera0', help=
 opt, _ = parser.parse_known_args()
 
 # load corresponding metadata
-db = soccer.SoccerVideo(join(opt.path_to_data))
+db = soccer.SoccerVideo(opt.path_to_data)
 db.digest_metadata()
 
 # ------------------------------------------------------------------------------
@@ -31,7 +31,7 @@ data = []
 draw.plot_field(data)
 
 # plot the cameras (extension needed - hardcoded))
-draw.plot_camera(data,db)
+draw.plot_camera(data, db)
 
 # layout parameters
 layout = dict(
@@ -42,29 +42,29 @@ layout = dict(
     title='camera location',
     showlegend=False,
     margin=dict(
-            r=0, l=10,
-            b=0, t=30),
+        r=0, l=10,
+        b=0, t=30),
     scene=dict(
         xaxis=dict(
             gridcolor='rgb(255, 255, 255)',
             zerolinecolor='rgb(255, 255, 255)',
             showbackground=True,
             backgroundcolor='rgb(230, 230,230)',
-            range = [-100,100]
+            range=[-100, 100]
         ),
         yaxis=dict(
             gridcolor='rgb(255, 255, 255)',
             zerolinecolor='rgb(255, 255, 255)',
             showbackground=True,
             backgroundcolor='rgb(230, 230,230)',
-            range = [0,50]
+            range=[0, 50]
         ),
         zaxis=dict(
             gridcolor='rgb(255, 255, 255)',
             zerolinecolor='rgb(255, 255, 255)',
             showbackground=True,
             backgroundcolor='rgb(230, 230,230)',
-            range = [-100,100]
+            range=[-100, 100]
         ),
         camera=dict(
             up=dict(
@@ -78,8 +78,8 @@ layout = dict(
                 z=1.2,
             )
         ),
-        aspectratio = dict( x=1, y=0.25, z=1 ),
-        aspectmode = 'manual'
+        aspectratio=dict(x=1, y=0.25, z=1),
+        aspectmode='manual'
     ),
 )
 
