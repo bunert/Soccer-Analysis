@@ -12,8 +12,7 @@ from os.path import isfile, join, exists
 parser = argparse.ArgumentParser(description='Calibrate a soccer video')
 # --path_to_data: where the images are
 parser.add_argument('--path_to_data', default='/home/bunert/Data/camera0', help='path')
-# --cameras: number of cameras
-
+opt, _ = parser.parse_known_args()
 
 db = soccer.SoccerVideo(opt.path_to_data)
 db.gather_detectron()

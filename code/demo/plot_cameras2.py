@@ -15,7 +15,7 @@ import scipy
 # CMD Line arguments
 parser = argparse.ArgumentParser(description='Estimate the poses')
 # --path_to_data: where the images are
-parser.add_argument('--path_to_data', default='/home/bunert/Data/camera0', help='path')
+parser.add_argument('--path_to_data', default='/home/bunert/Data/Left', help='path')
 
 opt, _ = parser.parse_known_args()
 

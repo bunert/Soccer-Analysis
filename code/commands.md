@@ -64,8 +64,14 @@ conda activate openpose
 cd $SCRATCH/installations/soccerontable
 while read requirement; do conda install --yes $requirement; done < requirements.txt
 pip install glumpy glog visdom --user
+
 git clone https://github.com/CMU-Perceptual-Computing-Lab/openpose
+cd openpose
+mkdir build && cd build && cmake .. && make -j`nproc`
+
 ```
+openpose install:
+https://github.com/CMU-Perceptual-Computing-Lab/openpose/issues/949
 
 ### caffe
 ```bash
@@ -81,10 +87,9 @@ BLAS_INCLUDE := /cluster/apps/gcc-4.8.5/openblas-0.2.19-w25ydbabttcfa6g76gejjkth
 
 ```
 
-#### parallel detectron:
-```bash
-conda install joblib
-```
+where:
+calibrate K1 done
+
 
 ################################################
 # Cluster workflow:
@@ -95,7 +100,8 @@ conda install joblib
 ``` bash
 module load  cuda/9.0.176 cudnn/7.0 opencv/3.4.3 python_gpu/2.7.14 nccl/2.3.7-1 libpng/1.6.27 openblas/0.2.19 jpeg/9b
 
-source .bashrc    
+conda activate detectron2
+source .bashrc
 conda activate detectron2
 # set path variables (adjust for own system)
 DETECTRON=$SCRATCH/installations/detectron
@@ -112,9 +118,9 @@ bsub -n 8 -W 8:00 -R "rusage[ngpus_excl_p=8,mem=4096,scratch=4096]" python tools
 
 ##### normal
 ```bash
-bsub -n 20 -W 2:00 -o $SCRATCH/outputs/parallel_n1_g1 -R "rusage[ngpus_excl_p=8,mem=4096]" python tools/infer_subimages.py --cfg configs/12_2017_baselines/e2e_mask_rcnn_R-50-FPN_2x.yaml --output-dir $CAM/detectron --image-ext jpg --wts models/model_final.pkl $CAM/images/
+bsub -n 8 -W 2:00 -o $SCRATCH/outputs/parallel_n8_g8 -R "rusage[ngpus_excl_p=8,mem=4096]" python tools/infer_subimages.py --cfg configs/12_2017_baselines/e2e_mask_rcnn_R-50-FPN_2x.yaml --output-dir $CAM/detectron --image-ext jpg --wts models/model_final.pkl $CAM/images/
 ```
-##### Parallel - not working!
+##### Parallel - not working
 ```bash
 bsub -n 1 -W 2:00 -o $SCRATCH/outputs/parallel_n1_g1 -R "rusage[ngpus_excl_p=1,mem=4096]" python tools/infer_parallel.py --cfg configs/12_2017_baselines/e2e_mask_rcnn_R-50-FPN_2x.yaml --output-dir $CAM/detectron --image-ext jpg --wts models/model_final.pkl $CAM/images/
 ```
@@ -160,6 +166,8 @@ scp -P 200 bunert@178.195.249.45:/home/bunert/Downloads/videos/* /home/bunert/Da
 # scp - cluster to tower
 scp -P 200 -r K9/ bunert@178.195.249.45:/home/bunert/Data
 
+# scp - tower to cluster
+scp -P 200 bunert@178.195.249.45:/home/bunert/Data $SCRATCH/Data/
 
 # scp - notebook to leonhard cluster
 scp Right-2019-03-26-20-40-02.mp4 bunert@login.leonhard.ethz.ch:/cluster/scratch/bunert/Data/camera0/images/
