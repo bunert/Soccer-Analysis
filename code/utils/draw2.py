@@ -156,8 +156,9 @@ def plot_field(data):
 # - frame number hardcoded
 # - iterate through all cameras available
 def plot_camera(data, db):
-    cam = cam_utils.Camera('Left', db.calib['000001']['A'], db.calib['000001']
-                      ['R'], db.calib['000001']['T'], db.shape[0], db.shape[1])
+    print(db.calib[0])
+    cam = cam_utils.Camera('Left', db.calib['Left_000001']['A'], db.calib['Left_000001']
+                      ['R'], db.calib['Left_000001']['T'], db.shape[0], db.shape[1])
 
     data.append(go.Scatter3d(go.Scatter3d(
         x = [cam.get_position().item(0, 0)],
