@@ -156,7 +156,6 @@ def plot_field(data):
 # - frame number hardcoded
 # - iterate through all cameras available
 def plot_camera(data, db):
-    print(db.calib[0])
     cam = cam_utils.Camera('Left', db.calib['Left_000001']['A'], db.calib['Left_000001']
                       ['R'], db.calib['Left_000001']['T'], db.shape[0], db.shape[1])
 
