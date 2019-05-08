@@ -118,8 +118,15 @@ bsub -n 8 -W 8:00 -R "rusage[ngpus_excl_p=8,mem=4096,scratch=4096]" python tools
 
 ##### normal
 ```bash
-bsub -n 8 -W 2:00 -o $SCRATCH/outputs/parallel_n8_g8 -R "rusage[ngpus_excl_p=8,mem=4096]" python tools/infer_subimages.py --cfg configs/12_2017_baselines/e2e_mask_rcnn_R-50-FPN_2x.yaml --output-dir $CAM/detectron --image-ext jpg --wts models/model_final.pkl $CAM/images/
+# model 50:
+bsub -n 8 -W 4:00 -o $SCRATCH/outputs/... -R "rusage[ngpus_excl_p=8,mem=4096]" python tools/infer_subimages.py --cfg configs/12_2017_baselines/e2e_mask_rcnn_R-50-FPN_2x.yaml --output-dir $CAM/detectron --image-ext jpg --wts models/model_final_50.pkl $CAM/images/
+
+# model 101:
+bsub -n 8 -W 4:00 -o $SCRATCH/outputs/... -R "rusage[ngpus_excl_p=8,mem=4096]" python tools/infer_subimages.py --cfg configs/12_2017_baselines/e2e_mask_rcnn_R-101-FPN_2x.yaml --output-dir $CAM/detectron --image-ext jpg --wts models/model_final.pkl $CAM/images/
+
+
 ```
+
 ##### Parallel - not working
 ```bash
 bsub -n 1 -W 2:00 -o $SCRATCH/outputs/parallel_n1_g1 -R "rusage[ngpus_excl_p=1,mem=4096]" python tools/infer_parallel.py --cfg configs/12_2017_baselines/e2e_mask_rcnn_R-50-FPN_2x.yaml --output-dir $CAM/detectron --image-ext jpg --wts models/model_final.pkl $CAM/images/
@@ -145,10 +152,15 @@ python3 demo/calibrate_video.py \
 ################################################
 
 # crop a video (ss=start [s], -t= duration [s])
-ffmpeg -ss 420 -i Right-2019-03-26-20-40-02.mp4 -t 30 -acodec copy test.mp4
+# .mp4 file
+ffmpeg -i CamVision-Cameras/Right-2019-03-26-20-40-02.mp4 -vcodec copy -acodec copy -ss 322 -t 30 /home/bunert/Videos/Right/Right.mp4
+
+# .mov file
+ffmpeg -i TV\ cameras/SUI-DEN_K9\ Off\ Rechts_1.HZ.mov -vcodec copy -acodec copy -ss 451 -t 30 /home/bunert/Videos/K9/K9.mov
 
 # extract frames
-ffmpeg -i test.mp4 test%08d.jpg -hide_banner
+ffmpeg -i Right/Right.mp4 -qscale:v 2 Right/images/%08d.jpg -hide_banner
+
 
 # VNC remote access port 200 or 5900
 run on tower:
