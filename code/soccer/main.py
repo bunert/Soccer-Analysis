@@ -343,7 +343,7 @@ class SoccerVideo:
                 break
         return all_included
 
-    def dump_video(self, vidtype, scale=4, mot_tracks=None, one_color=True):
+    def dump_video(self, vidtype, scale=1, mot_tracks=None, one_color=True):
         if vidtype not in ['calib', 'poses', 'detections', 'tracks', 'mask']:
             raise Exception('Uknown video format')
 

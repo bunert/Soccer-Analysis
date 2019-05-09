@@ -59,7 +59,7 @@ def _calibrate_camera_dist_transf(A, R, T, dist_transf, points3d):
 
 
 # ~/Studium/BachelorThesis/code/data/field.png
-def _set_correspondences(img, field_img_path='./data/field.png'):
+def _set_correspondences(img, field_img_path='./demo/data/field.png'):
 
     field_img = io.imread(field_img_path)
 
@@ -99,7 +99,7 @@ def _set_correspondences(img, field_img_path='./data/field.png'):
     return points2d, points3d
 
 
-def calibrate_by_click(img, mask, edge_sfactor=0.5, field_img_path='./data/field.png'):
+def calibrate_by_click(img, mask, edge_sfactor=0.5, field_img_path='./demo/data/field.png'):
 
     h, w = img.shape[0:2]
 

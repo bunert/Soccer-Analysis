@@ -18,7 +18,6 @@ import scipy
 W, H = 104.73, 67.74
 
 
-
 # higher nn lead to preciser cicles but longer computation
 def make_field_circle(r=9.15, nn=7):
     """
@@ -32,6 +31,8 @@ def make_field_circle(r=9.15, nn=7):
     return [(np.cos(2 * np.pi / n * x) * r, 0, np.sin(2 * np.pi / n * x) * r) for x in range(0, n + 1)]
 
 # sort the polygon to plot the convex hull of the polygon
+
+
 def PolygonSort(corners):
     n = len(corners)
     cx = float(sum(x for x, y in corners)) / n
@@ -40,10 +41,12 @@ def PolygonSort(corners):
     for x, y in corners:
         an = (np.arctan2(y - cy, x - cx) + 2.0 * np.pi) % (2.0 * np.pi)
         cornersWithAngles.append((x, y, an))
-    cornersWithAngles.sort(key = lambda tup: tup[2])
+    cornersWithAngles.sort(key=lambda tup: tup[2])
     return map(lambda tuple: (tuple[0], tuple[1]), cornersWithAngles)
 
 # return the points for the straight lines of the field
+
+
 def get_field_points_limited():
 
     outer_rectangle = np.array([[-W / 2., 0, H / 2.],
@@ -77,41 +80,51 @@ def get_field_points_limited():
     return [outer_rectangle, left_big_box, right_big_box, left_small_box, right_small_box, mid_line]
 
 # draw a box out of 4 data points
+
+
 def draw_box(b, data):
-    data.append(go.Scatter3d(x=[b.item(0),b.item(3)],y=[0,0],z=[b.item(2),b.item(5)],
-                mode = 'lines', line=dict(color='rgb(0,0,0)', width=3)))
-    data.append(go.Scatter3d(x=[b.item(0),b.item(9)],y=[0,0],z=[b.item(2),b.item(11)],
-                mode = 'lines', line=dict(color='rgb(0,0,0)', width=3)))
-    data.append(go.Scatter3d(x=[b.item(3),b.item(6)],y=[0,0],z=[b.item(5),b.item(8)],
-                mode = 'lines', line=dict(color='rgb(0,0,0)', width=3)))
-    data.append(go.Scatter3d(x=[b.item(6),b.item(9)],y=[0,0],z=[b.item(8),b.item(11)],
-                mode = 'lines', line=dict(color='rgb(0,0,0)', width=3)))
+    data.append(go.Scatter3d(x=[b.item(0), b.item(3)], y=[0, 0], z=[b.item(2), b.item(5)],
+                             mode='lines', line=dict(color='rgb(0,0,0)', width=3)))
+    data.append(go.Scatter3d(x=[b.item(0), b.item(9)], y=[0, 0], z=[b.item(2), b.item(11)],
+                             mode='lines', line=dict(color='rgb(0,0,0)', width=3)))
+    data.append(go.Scatter3d(x=[b.item(3), b.item(6)], y=[0, 0], z=[b.item(5), b.item(8)],
+                             mode='lines', line=dict(color='rgb(0,0,0)', width=3)))
+    data.append(go.Scatter3d(x=[b.item(6), b.item(9)], y=[0, 0], z=[b.item(8), b.item(11)],
+                             mode='lines', line=dict(color='rgb(0,0,0)', width=3)))
 
 # draw a single line
-def draw_line(b,data):
-    data.append(go.Scatter3d(x=[b.item(0),b.item(3)],y=[0,0],z=[b.item(2),b.item(5)],
-                mode = 'lines', line=dict(color='rgb(0,0,0)', width=3)))
+
+
+def draw_line(b, data):
+    data.append(go.Scatter3d(x=[b.item(0), b.item(3)], y=[0, 0], z=[b.item(2), b.item(5)],
+                             mode='lines', line=dict(color='rgb(0,0,0)', width=3)))
 
 # middle circle
+
+
 def draw_middlecircle(data):
     corners = np.array(make_field_circle(9.15))
     tuples = []
     for i in range(len(corners)):
-        tuples.append((corners[i,0],corners[i,2]))
+        tuples.append((corners[i, 0], corners[i, 2]))
     corners_sorted = list(PolygonSort(tuples))
     x = [corner[0] for corner in corners_sorted]
     z = [corner[1] for corner in corners_sorted]
-    draw_circle(data,x,z)
+    draw_circle(data, x, z)
 
 # draw a cicle
-def draw_circle(data,x,z):
+
+
+def draw_circle(data, x, z):
     for i in range(len(x)-1):
-        data.append(go.Scatter3d(x=[x[i],x[i+1]],y=[0,0],z=[z[i],z[i+1]],
-                    mode = 'lines', line=dict(color='rgb(0,0,0)', width=3)))
-    data.append(go.Scatter3d(x=[x[len(x)-1],x[0]],y=[0,0],z=[z[len(z)-1],z[0]],
-                mode = 'lines', line=dict(color='rgb(0,0,0)', width=3)))
+        data.append(go.Scatter3d(x=[x[i], x[i+1]], y=[0, 0], z=[z[i], z[i+1]],
+                                 mode='lines', line=dict(color='rgb(0,0,0)', width=3)))
+    data.append(go.Scatter3d(x=[x[len(x)-1], x[0]], y=[0, 0], z=[z[len(z)-1], z[0]],
+                             mode='lines', line=dict(color='rgb(0,0,0)', width=3)))
 
 # left halft circle
+
+
 def draw_lefthalf_circle(data):
     left_half_circile = np.array(make_field_circle(9.15))
     left_half_circile[:, 0] = left_half_circile[:, 0] - W / 2. + 11.0
@@ -119,13 +132,15 @@ def draw_lefthalf_circle(data):
     left_half_circile = left_half_circile[index, :]
     tuples = []
     for i in range(len(left_half_circile)):
-        tuples.append((left_half_circile[i,0],left_half_circile[i,2]))
+        tuples.append((left_half_circile[i, 0], left_half_circile[i, 2]))
     corners_sorted = list(PolygonSort(tuples))
     x = [corner[0] for corner in corners_sorted]
     z = [corner[1] for corner in corners_sorted]
-    draw_circle(data,x,z)
+    draw_circle(data, x, z)
 
 # right half circle
+
+
 def draw_righthalf_circle(data):
     right_half_circile = np.array(make_field_circle(9.15))
     right_half_circile[:, 0] = right_half_circile[:, 0] + W / 2. - 11.0
@@ -133,20 +148,22 @@ def draw_righthalf_circle(data):
     right_half_circile = right_half_circile[index, :]
     tuples = []
     for i in range(len(right_half_circile)):
-        tuples.append((right_half_circile[i,0],right_half_circile[i,2]))
+        tuples.append((right_half_circile[i, 0], right_half_circile[i, 2]))
     corners_sorted = list(PolygonSort(tuples))
     x = [corner[0] for corner in corners_sorted]
     z = [corner[1] for corner in corners_sorted]
-    draw_circle(data,x,z)
+    draw_circle(data, x, z)
 
 # plot the whole field
+
+
 def plot_field(data):
     field_list = get_field_points_limited()
     for i in range(len(field_list)):
-        if (i<=4):
-            draw_box(field_list[i],data)
-        elif (i==5):
-            draw_line(field_list[i],data)
+        if (i <= 4):
+            draw_box(field_list[i], data)
+        elif (i == 5):
+            draw_line(field_list[i], data)
     draw_lefthalf_circle(data)
     draw_righthalf_circle(data)
     draw_middlecircle(data)
@@ -155,26 +172,29 @@ def plot_field(data):
 # needs to get extended:
 # - frame number hardcoded
 # - iterate through all cameras available
-def plot_camera(data, db):
-    cam = cam_utils.Camera('Left', db.calib['Left_000001']['A'], db.calib['Left_000001']
-                      ['R'], db.calib['Left_000001']['T'], db.shape[0], db.shape[1])
+
+
+def plot_camera(data, db, name):
+    cam = cam_utils.Camera(name, db.calib['00000001']['A'], db.calib['00000001']
+                           ['R'], db.calib['00000001']['T'], db.shape[0], db.shape[1])
 
     data.append(go.Scatter3d(go.Scatter3d(
-        x = [cam.get_position().item(0, 0)],
-        y = [cam.get_position().item(1, 0)],
-        z = [cam.get_position().item(2, 0)],
-        text = "camera0",
-        mode = 'markers',
-        marker = dict(
-            sizemode = 'diameter',
-            sizeref = 750, # info on sizeref: https://plot.ly/python/reference/#scatter-marker-sizeref
-            size = 6,
-            color = 'rgb(30, 70, 180)',
-            ))))
+        x=[cam.get_position().item(0, 0)],
+        y=[cam.get_position().item(1, 0)],
+        z=[cam.get_position().item(2, 0)],
+        text=cam.name,
+        mode='markers',
+        marker=dict(
+            sizemode='diameter',
+            sizeref=750,  # info on sizeref: https://plot.ly/python/reference/#scatter-marker-sizeref
+            size=6,
+            color='rgb(30, 70, 180)',
+        ))))
 
 ################################################################################
 # Original draw file:
 ################################################################################
+
 
 def get_field_points():
 
@@ -184,7 +204,7 @@ def get_field_points():
                                 [W / 2., 0, H / 2.]])
 
     mid_line = np.array([[0., 0., H / 2],
-                        [0., 0., -H / 2]])
+                         [0., 0., -H / 2]])
 
     left_big_box = np.array([[-W / 2., 0, 40.32/2.],
                              [-W / 2., 0, -40.32 / 2.],
@@ -192,19 +212,19 @@ def get_field_points():
                              [-W/2.+16.5, 0, 40.32/2.]])
 
     right_big_box = np.array([[W/2.-16.5, 0, 40.32/2.],
-                             [W/2., 0, 40.32/2.],
-                             [W/2., 0, -40.32/2.],
-                             [W/2.-16.5, 0, -40.32/2.]])
+                              [W/2., 0, 40.32/2.],
+                              [W/2., 0, -40.32/2.],
+                              [W/2.-16.5, 0, -40.32/2.]])
 
     left_small_box = np.array([[-W/2., 0, 18.32/2.],
                                [-W / 2., 0, -18.32 / 2.],
                                [-W / 2. + 5.5, 0, -18.32 / 2.],
-                               [-W/2.+5.5, 0, 18.32/2.] ])
+                               [-W/2.+5.5, 0, 18.32/2.]])
 
     right_small_box = np.array([[W/2.-5.5, 0, 18.32/2.],
-                               [W/2., 0, 18.32/2.],
-                               [W/2., 0, -18.32/2.],
-                               [W/2.-5.5, 0, -18.32/2.]])
+                                [W/2., 0, 18.32/2.],
+                                [W/2., 0, -18.32/2.],
+                                [W/2.-5.5, 0, -18.32/2.]])
 
     central_circle = np.array(make_field_circle(r=9.15, nn=1))
 
@@ -366,7 +386,8 @@ def draw_skeleton(keypoints, h, w):
             cv2.circle(output, (int(bone_end[0]), int(bone_end[1])), 2, (fg_label, 0, 0), -1)
 
         if bone_start[2] > 0.0 and bone_end[2] > 0.0:
-            cv2.line(output, (int(bone_start[0]), int(bone_start[1])), (int(bone_end[0]), int(bone_end[1])), (fg_label, 0, 0), 1)
+            cv2.line(output, (int(bone_start[0]), int(bone_start[1])),
+                     (int(bone_end[0]), int(bone_end[1])), (fg_label, 0, 0), 1)
 
     return output[:, :, 0]
 
@@ -396,4 +417,5 @@ def draw_skeleton_on_image(img, poses, cmap_fun, one_color=False, pose_color=Non
             if s1 == 0 or s2 == 0:
                 continue
 
-            cv2.line(img, (int(x1), int(y1)), (int(x2), int(y2)), (int(clr[0]*255), int(clr[1]*255), int(clr[2]*255)), 3)
+            cv2.line(img, (int(x1), int(y1)), (int(x2), int(y2)),
+                     (int(clr[0]*255), int(clr[1]*255), int(clr[2]*255)), 3)

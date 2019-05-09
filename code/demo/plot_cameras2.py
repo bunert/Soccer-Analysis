@@ -15,13 +15,22 @@ import scipy
 # CMD Line arguments
 parser = argparse.ArgumentParser(description='Estimate the poses')
 # --path_to_data: where the images are
-parser.add_argument('--path_to_data', default='/home/bunert/Data/Left', help='path')
+parser.add_argument('--path_to_data', default='/home/bunert/Data/', help='path')
 
 opt, _ = parser.parse_known_args()
 
 # load corresponding metadata
-db = soccer.SoccerVideo(opt.path_to_data)
-db.digest_metadata()
+db_K1 = soccer.SoccerVideo(os.path.join(opt.path_to_data, 'K1'))
+db_K8 = soccer.SoccerVideo(os.path.join(opt.path_to_data, 'K8'))
+db_Left = soccer.SoccerVideo(os.path.join(opt.path_to_data, 'Left'))
+db_Right = soccer.SoccerVideo(os.path.join(opt.path_to_data, 'Right'))
+db_K9 = soccer.SoccerVideo(os.path.join(opt.path_to_data, 'K9'))
+
+db_K1.digest_metadata()
+db_K8.digest_metadata()
+db_Left.digest_metadata()
+db_Right.digest_metadata()
+db_K9.digest_metadata()
 
 # ------------------------------------------------------------------------------
 
@@ -31,7 +40,12 @@ data = []
 draw.plot_field(data)
 
 # plot the cameras (extension needed - hardcoded))
-draw.plot_camera(data, db)
+draw.plot_camera(data, db_K1, "K1")
+draw.plot_camera(data, db_K8, "K8")
+draw.plot_camera(data, db_Left, "Left")
+draw.plot_camera(data, db_Right, "Right")
+draw.plot_camera(data, db_K9, "K9")
+
 
 # layout parameters
 layout = dict(
