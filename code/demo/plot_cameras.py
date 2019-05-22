@@ -8,24 +8,29 @@ import utils.io as io
 import utils.camera as cam_utils
 from tqdm import tqdm
 import plotly as py
-import utils.draw as draw
+import utils.draw2 as draw
 from plotly.tools import FigureFactory as FF
 import scipy
 
 # CMD Line arguments
 parser = argparse.ArgumentParser(description='Estimate the poses')
 # --path_to_data: where the images are
-parser.add_argument('--path_to_data', default='/home/bunert/Data', help='path')
-# --cameras: number of cameras
-parser.add_argument('--cameras', default=1, type=int, help='path')
+parser.add_argument('--path_to_data', default='/home/bunert/Data/', help='path')
 
 opt, _ = parser.parse_known_args()
 
 # load corresponding metadata
-db = []
-for i in range(opt.cameras):
-    db.append(soccer.SoccerVideo(join(opt.path_to_data, 'camera{0}'.format(i))))
-    db[i].digest_metadata()
+db_K1 = soccer.SoccerVideo(os.path.join(opt.path_to_data, 'K1'))
+db_K8 = soccer.SoccerVideo(os.path.join(opt.path_to_data, 'K8'))
+db_Left = soccer.SoccerVideo(os.path.join(opt.path_to_data, 'Left'))
+db_Right = soccer.SoccerVideo(os.path.join(opt.path_to_data, 'Right'))
+db_K9 = soccer.SoccerVideo(os.path.join(opt.path_to_data, 'K9'))
+
+db_K1.digest_metadata()
+db_K8.digest_metadata()
+db_Left.digest_metadata()
+db_Right.digest_metadata()
+db_K9.digest_metadata()
 
 # ------------------------------------------------------------------------------
 
@@ -35,7 +40,12 @@ data = []
 draw.plot_field(data)
 
 # plot the cameras (extension needed - hardcoded))
-draw.plot_camera(data,db)
+draw.plot_camera(data, db_K1, "K1")
+draw.plot_camera(data, db_K8, "K8")
+draw.plot_camera(data, db_Left, "Left")
+draw.plot_camera(data, db_Right, "Right")
+draw.plot_camera(data, db_K9, "K9")
+
 
 # layout parameters
 layout = dict(
@@ -46,29 +56,29 @@ layout = dict(
     title='camera location',
     showlegend=False,
     margin=dict(
-            r=0, l=10,
-            b=0, t=30),
+        r=0, l=10,
+        b=0, t=30),
     scene=dict(
         xaxis=dict(
             gridcolor='rgb(255, 255, 255)',
             zerolinecolor='rgb(255, 255, 255)',
             showbackground=True,
             backgroundcolor='rgb(230, 230,230)',
-            range = [-100,100]
+            range=[-100, 100]
         ),
         yaxis=dict(
             gridcolor='rgb(255, 255, 255)',
             zerolinecolor='rgb(255, 255, 255)',
             showbackground=True,
             backgroundcolor='rgb(230, 230,230)',
-            range = [0,50]
+            range=[0, 50]
         ),
         zaxis=dict(
             gridcolor='rgb(255, 255, 255)',
             zerolinecolor='rgb(255, 255, 255)',
             showbackground=True,
             backgroundcolor='rgb(230, 230,230)',
-            range = [-100,100]
+            range=[-100, 100]
         ),
         camera=dict(
             up=dict(
@@ -82,8 +92,8 @@ layout = dict(
                 z=1.2,
             )
         ),
-        aspectratio = dict( x=1, y=0.25, z=1 ),
-        aspectmode = 'manual'
+        aspectratio=dict(x=1, y=0.25, z=1),
+        aspectmode='manual'
     ),
 )
 
