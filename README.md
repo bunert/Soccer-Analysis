@@ -115,7 +115,9 @@ Using an end-to-end trained Mask R-CNN model with a ResNet-50-FPN backbone from 
 ```bash
 # set path variables (adjust for own system)
 DETECTRON=$HOME/installations/Detectron
-CAM=$HOME/Data/camera0
+
+# add path from folder which you want
+DATA=$HOME/Data/camera0
 
 
 mkdir $DATA/detectron
@@ -123,10 +125,10 @@ cd $DETECTRON
 ###
 python2 tools/infer_subimages.py \
   --cfg configs/12_2017_baselines/e2e_mask_rcnn_R-50-FPN_2x.yaml \
-  --output-dir $CAM/detectron \
+  --output-dir $DATA/detectron \
   --image-ext jpg \
   --wts https://dl.fbaipublicfiles.com/detectron/35859007/12_2017_baselines/e2e_mask_rcnn_R-50-FPN_2x.yaml.01_49_07.By8nQcCH/output/train/coco_2014_train%3Acoco_2014_valminusminival/generalized_rcnn/model_final.pkl \
-  $CAM/images/
+  $DATA/images/
 ```
 
 
@@ -136,13 +138,14 @@ To run the calibration step, you have to manually select four pairs of correspon
 ```bash
 # set path variables (adjust for own system)
 PROJ=$HOME/Studium/BachelorThesis/code
-DATA=$HOME/Data
+
+# set your folder
+DATA=$HOME/Data/...
 cd $PROJ
 
-# set --cameras to the number of different cameras
+# expand $DATA/ with actual path
 python3 demo/calibrate_video.py \
-  --path_to_data $DATA \
-  --cameras 1
+  --path_to_data $DATA
 ```
 
 #### Estimate Poses [(openpose github)](https://github.com/CMU-Perceptual-Computing-Lab/openpose)
@@ -160,7 +163,6 @@ Run the `openpose.bin` on the boxes obtained from detectron. The demo from openp
 OPENPOSE=$HOME/installations/openpose
 
 python3 demo/estimate_openpose.py \
-  --cameras 1 \
   --openpose_dir $OPENPOSE \
   --path_to_data $DATA
 ```
