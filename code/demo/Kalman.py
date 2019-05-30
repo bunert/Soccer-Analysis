@@ -91,7 +91,10 @@ class Kalman:
         kf.H = H
 
         kf.R *= np.eye(50) * (R_std**2)
+
+        # discrete white noise for the process noise
         q = Q_discrete_white_noise(dim=2, dt=dt, var=Q_var)
+        
         block = block_diag(q,q)
 
         kf.Q =  block_diag(block,
