@@ -166,3 +166,11 @@ python3 demo/estimate_openpose.py \
   --openpose_dir $OPENPOSE \
   --path_to_data $DATA
 ```
+
+and the refine of the openposes:
+```bash
+cd $HOME/Studium/BachelorThesis/code
+# add desired data path
+python3 demo/refine_openpose.py --path_to_data ~/Data/.../
+
+```

@@ -17,6 +17,26 @@ import scipy
 
 W, H = 104.73, 67.74
 
+def plotPlayer(players, data):
+    # data.append(go.Scatter3d(x=[b.item(0), b.item(3)], y=[0, 0], z=[b.item(2), b.item(5)],
+                             # mode='lines', line=dict(color='rgb(0,0,0)', width=3)))
+
+
+    ##################################
+    limps = np.array([[0, 1], [1, 2], [2, 3], [3, 4], [1, 5], [5, 6], [6, 7], [1, 11], [11, 12], [12, 13], [1, 8],
+            [8, 9], [9, 10], [14, 15], [16, 17], [0, 14], [0, 15], [14, 16], [15, 17], [8, 11], [2, 8], [5, 11]])
+
+    players = np.asmatrix(players)
+
+    for i in range(len(limps)):
+        data.append(go.Scatter3d(x=[players[limps[i][0]][0,0], players[limps[i][1]][0,0]], y=[players[limps[i][0]][0,1], players[limps[i][1]][0,1]],
+             z=[players[limps[i][0]][0,2], players[limps[i][1]][0,2]], mode='lines', line=dict(color='rgb(0,0,0)', width=3)))
+
+    return
+
+
+
+
 
 # higher nn lead to preciser cicles but longer computation
 def make_field_circle(r=9.15, nn=7):

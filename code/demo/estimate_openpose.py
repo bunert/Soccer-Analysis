@@ -6,7 +6,7 @@ from os.path import isfile, join, exists
 
 
 ################################################################################
-# run: python3 estimate_openpose.py --cameras 1
+# run: python3 estimate_openpose.py --path_to_data ~/Data/.../  --openpose_dir /home/bunert/installations/openpose
 ################################################################################
 
 
@@ -28,5 +28,5 @@ db.get_boxes_from_detectron()
 db.dump_video('detections')
 
 db.estimate_openposes(openpose_dir=opt.openpose_dir)
-db.refine_poses(keypoint_thresh=7, score_thresh=0.4, neck_thresh=0.4)
+#db.refine_poses(keypoint_thresh=7, score_thresh=0.4, neck_thresh=0.4)
 db.dump_video('poses')

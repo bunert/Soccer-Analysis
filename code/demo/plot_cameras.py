@@ -12,6 +12,12 @@ import utils.draw2 as draw
 from plotly.tools import FigureFactory as FF
 import scipy
 
+################################################################################
+# run: python3 plot_cameras.py --path_to_data ~/Data/
+################################################################################
+
+
+
 # CMD Line arguments
 parser = argparse.ArgumentParser(description='Estimate the poses')
 # --path_to_data: where the images are

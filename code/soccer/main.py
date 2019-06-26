@@ -298,6 +298,9 @@ class SoccerVideo:
                 if len(valid) > keypoint_thresh and score > score_thresh and keypoints[1, 2] > neck_thresh:
                     keep.append(ii)
 
+            if (len(keep) == 0):
+                continue
+
             poses = [poses[ii] for ii in keep]
 
             root_part = 1
@@ -354,7 +357,8 @@ class SoccerVideo:
 
         fourcc = cv2.VideoWriter_fourcc(*'mp4v')  # MP4V
         out_file = join(self.path_to_dataset, '{0}.mp4'.format(vidtype))
-        out = cv2.VideoWriter(out_file, fourcc, 20.0,
+        # 25 FPS
+        out = cv2.VideoWriter(out_file, fourcc, 25.0,
                               (self.shape[1] // scale, self.shape[0] // scale))
 
         font = cv2.FONT_HERSHEY_SIMPLEX

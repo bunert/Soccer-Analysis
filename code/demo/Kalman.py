@@ -10,11 +10,11 @@ class Kalman:
     def __init__(self):
 
         #Variables:
-        R_std=1.
-        Q_var=5.
-        x_dimension = 100
-        z_dimension = 50
-        dt = 0.03
+        R_std=1.            # measurement noise
+        Q_var=5.            # process noise
+        x_dimension = 100   # state dimension
+        z_dimension = 50    # measurement dimension
+        dt = 0.03           # time steps
 
 
         #Number of pixels in x and y direction where we still accept the filter output.
@@ -94,7 +94,7 @@ class Kalman:
 
         # discrete white noise for the process noise
         q = Q_discrete_white_noise(dim=2, dt=dt, var=Q_var)
-        
+
         block = block_diag(q,q)
 
         kf.Q =  block_diag(block,
