@@ -4,9 +4,13 @@ import soccer
 from os import listdir
 from os.path import isfile, join, exists
 import pandas
+import cv2
 import numpy as np
+import matplotlib
 import plotly as py
 import utils.draw2 as draw
+import utils.camera as cam_utils
+import utils.draw2 as draw_utils
 
 
 
@@ -22,9 +26,16 @@ parser.add_argument('--path_to_data', default='/home/bunert/Data/', help='path')
 
 opt, _ = parser.parse_known_args()
 
+################################################################################
+# initialization of the data
+################################################################################
+
+
+################################################################################
 # initialize databases for all cameras and load the data (COCO)
 # names: db_K1, db_K8, db_K9, db_Left, db_Right
 # example: print(db_K1.poses["00000009"][0])
+################################################################################
 def init_soccerdata():
     # load corresponding metadata
     db_K1 = soccer.SoccerVideo(os.path.join(opt.path_to_data, 'K1'))
@@ -47,9 +58,11 @@ def init_soccerdata():
     db_Right.refine_poses(keypoint_thresh=7, score_thresh=0.4, neck_thresh=0.4)
     return db_K1, db_K8, db_K9, db_Left, db_Right
 
+################################################################################
 # access: players[x].iloc[row][column]
-# column: 0=time, 1=x, 2=y
-# TODO: verschiebung von Feldgrösse genau berechnen
+# column: 0=time, 1=x, 2=y -> y is later z in 3D
+# TODO: verschiebung von Feldgrösse genau berechnen (csv field ungenau)
+################################################################################
 def init_csv():
     players = []
 
@@ -124,12 +137,15 @@ def init_csv():
             sep = ';', decimal=",", skiprows=5, usecols=[0,1,2], nrows=505, names=['time', 'x', 'y']))
 
     for i in range(len(players)):
-        players[i]['y'] -= 32.5
-        players[i]['x'] *= 1
+        players[i]['y'] -= 32.75
+        players[i]['x'] *= 1.03693
+        players[i]['y'] *= -1.03419847328
 
     return players
 
+################################################################################
 # Blickrichtung: positive X
+################################################################################
 def init_3d_players(x,z,alpha):
     # W/X = 104.73, H/Y = 67.74 Meter
 
@@ -148,7 +164,7 @@ def init_3d_players(x,z,alpha):
     body.append([0.,1.125 ,0.325])
 
     #  4: right hand
-    body.append([0., 0.9 ,0.3])
+    body.append([0.2, 0.8 ,0.3])
 
     #  5: left shoulder
     body.append([0. ,1.5075 , -0.15])
@@ -157,7 +173,7 @@ def init_3d_players(x,z,alpha):
     body.append([0.,1.125 , -0.325])
 
     #  7: left hand
-    body.append([0., 0.9, -0.3])
+    body.append([0.2, 0.8, -0.3])
 
     #  8: right hip
     body.append([0., 0.9, 0.15])
@@ -206,8 +222,10 @@ def init_3d_players(x,z,alpha):
 
     return body
 
+################################################################################
 # project each csv player on the field
 # return: array of all player, each player is a matrix
+################################################################################
 def init_all_3d_players():
     # Read data from csv files
     csv_players = init_csv()
@@ -215,82 +233,79 @@ def init_all_3d_players():
     players = []
 
     for i in range(len(csv_players)):
-        players.append(init_3d_players(csv_players[i].iloc[0][1],csv_players[i].iloc[0][2],0))
+        #Blickrichtung,
+        if (i <= 10):
+            players.append(init_3d_players(csv_players[i].iloc[0][1],csv_players[i].iloc[0][2],180))
+        else:
+            players.append(init_3d_players(csv_players[i].iloc[0][1],csv_players[i].iloc[0][2],0))
 
     return players
 
-# plots all players from arguments in plotly
-def plot_players(players_3d):
-    # plot the field
-    data = []
-    draw.plot_field(data)
+################################################################################
+# Project all players on the first image from one Kamera
+################################################################################
+def project_players(db_cam, players_3d, frame):
+    frame_name = db_cam.frame_basenames[frame]
+    camera = cam_utils.Camera("Cam", db_cam.calib[frame_name]['A'], db_cam.calib[frame_name]['R'], db_cam.calib[frame_name]['T'], db_cam.shape[0], db_cam.shape[1])
 
-    for i in range(len(players_3d)):
-        draw.plotPlayer(players_3d[i], data)
+    cmap = matplotlib.cm.get_cmap('hsv')
+    img = db_cam.get_frame(frame, dtype=np.uint8)
+    for k in range(len(players_3d)):
+        points2d = []
+        for i in range(len(players_3d[k])):
+            tmp, depth = camera.project(players_3d[k][i])
+            behind_points = (depth < 0).nonzero()[0]
+            tmp[behind_points, :] *= -1
+            points2d.append(tmp)
+        draw_utils.draw_skeleton_on_image_2dposes(img, points2d, cmap, one_color=True)
 
-    # layout parameters
-    layout = dict(
-        width=1500,
-        height=750,
-        plot_bgcolor='rgb(0,0,0)',
-        autosize=False,
-        title='camera location',
-        showlegend=False,
-        margin=dict(
-            r=0, l=10,
-            b=0, t=30),
-        scene=dict(
-            xaxis=dict(
-                gridcolor='rgb(255, 255, 255)',
-                zerolinecolor='rgb(255, 255, 255)',
-                showbackground=True,
-                backgroundcolor='rgb(230, 230,230)',
-                range=[-100, 100]
-            ),
-            yaxis=dict(
-                gridcolor='rgb(255, 255, 255)',
-                zerolinecolor='rgb(255, 255, 255)',
-                showbackground=True,
-                backgroundcolor='rgb(230, 230,230)',
-                range=[0, 50]
-            ),
-            zaxis=dict(
-                gridcolor='rgb(255, 255, 255)',
-                zerolinecolor='rgb(255, 255, 255)',
-                showbackground=True,
-                backgroundcolor='rgb(230, 230,230)',
-                range=[-100, 100]
-            ),
-            camera=dict(
-                up=dict(
-                    x=0,
-                    y=1,
-                    z=0
-                ),
-                eye=dict(
-                    x=1.2,
-                    y=0.7100,
-                    z=1.2,
-                )
-            ),
-            aspectratio=dict(x=1, y=0.25, z=1),
-            aspectmode='manual'
-        ),
-    )
+    cv2.imwrite('/home/bunert/Data/test.png',np.uint8(img[:, :, (2, 1, 0)]))
 
-    fig = dict(data=data, layout=layout)
-    py.offline.plot(fig, filename='camera.html')
+################################################################################
+# Metric logic
+################################################################################
+
+
 
 
 def main():
+
+    ################################################################################
+    # initialization
+    ################################################################################
     # Read camera data
     # db_K1, db_K8, db_K9, db_Left, db_Right = init_soccerdata()
+
+    data_dict = {0: db_K1, 1: db_K8, 2: db_K9, 3: db_Left, 4: db_Right}
+
+    print(data_dict[1])
+    exit()
+
+    # Testing with only one camera:
+    # TODO: remove later
+    db_K1 = soccer.SoccerVideo(os.path.join(opt.path_to_data, 'K1'))
+    db_K1.digest_metadata()
+    db_K1.refine_poses(keypoint_thresh=7, score_thresh=0.4, neck_thresh=0.4)
 
     # all 3D player positions from csv x-z location
     # use: players_3d[x] -> matrix of player number x with each row a keypoint
     players_3d = init_all_3d_players()
 
-    # plot_players(players_3d)
+    ################################################################################
+    # To plot the acutal 3D Player List in 3D
+    ################################################################################
+    # draw.plot_all_players(players_3d)
+
+
+    ################################################################################
+    # Project all players on the first (frame 0) image from one Kamera
+    ################################################################################
+    # project_players(db_K1, players_3d, 0)
+
+
+    print(db_K1.poses["00000009"][0][0])
+
+
 
 
 

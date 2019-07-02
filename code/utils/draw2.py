@@ -17,20 +17,84 @@ import scipy
 
 W, H = 104.73, 67.74
 
-def plotPlayer(players, data):
-    # data.append(go.Scatter3d(x=[b.item(0), b.item(3)], y=[0, 0], z=[b.item(2), b.item(5)],
-                             # mode='lines', line=dict(color='rgb(0,0,0)', width=3)))
 
+################################################################################
+# plots all players from arguments in plotly
+# arguments: list of all 22 players and their keypoints in 3D (0-10 Denmark, 11-21 Swiss)
+################################################################################
+def plot_all_players(players_3d):
+    # plot the field
+    plot_data = []
+    plot_field(plot_data)
 
-    ##################################
+    rgb_color = 'rgb(0, 0, 0)'
+    for i in range(len(players_3d)):
+        if (i == 11):
+            rgb_color = 'rgb(255, 8, 0)' #different color for the different teams
+        plot_player(players_3d[i], plot_data, rgb_color)
+
+    # layout parameters
+    layout = dict(
+        width=1500,
+        height=750,
+        plot_bgcolor='rgb(0,0,0)',
+        autosize=False,
+        title='camera location',
+        showlegend=False,
+        margin=dict(
+            r=0, l=10,
+            b=0, t=30),
+        scene=dict(
+            xaxis=dict(
+                gridcolor='rgb(255, 255, 255)',
+                zerolinecolor='rgb(255, 255, 255)',
+                showbackground=True,
+                backgroundcolor='rgb(230, 230,230)',
+                range=[-100, 100]
+            ),
+            yaxis=dict(
+                gridcolor='rgb(255, 255, 255)',
+                zerolinecolor='rgb(255, 255, 255)',
+                showbackground=True,
+                backgroundcolor='rgb(230, 230,230)',
+                range=[0, 50]
+            ),
+            zaxis=dict(
+                gridcolor='rgb(255, 255, 255)',
+                zerolinecolor='rgb(255, 255, 255)',
+                showbackground=True,
+                backgroundcolor='rgb(230, 230,230)',
+                range=[-100, 100]
+            ),
+            camera=dict(
+                up=dict(
+                    x=0,
+                    y=1,
+                    z=0
+                ),
+                eye=dict(
+                    x=1.2,
+                    y=0.7100,
+                    z=1.2,
+                )
+            ),
+            aspectratio=dict(x=1, y=0.25, z=1),
+            aspectmode='manual'
+        ),
+    )
+
+    fig = dict(data=plot_data, layout=layout)
+    py.offline.plot(fig, filename='camera.html')
+
+def plot_player(players, plot_data, rgb_color):
     limps = np.array([[0, 1], [1, 2], [2, 3], [3, 4], [1, 5], [5, 6], [6, 7], [1, 11], [11, 12], [12, 13], [1, 8],
             [8, 9], [9, 10], [14, 15], [16, 17], [0, 14], [0, 15], [14, 16], [15, 17], [8, 11], [2, 8], [5, 11]])
 
     players = np.asmatrix(players)
 
     for i in range(len(limps)):
-        data.append(go.Scatter3d(x=[players[limps[i][0]][0,0], players[limps[i][1]][0,0]], y=[players[limps[i][0]][0,1], players[limps[i][1]][0,1]],
-             z=[players[limps[i][0]][0,2], players[limps[i][1]][0,2]], mode='lines', line=dict(color='rgb(0,0,0)', width=3)))
+        plot_data.append(go.Scatter3d(x=[players[limps[i][0]][0,0], players[limps[i][1]][0,0]], y=[players[limps[i][0]][0,1], players[limps[i][1]][0,1]],
+             z=[players[limps[i][0]][0,2], players[limps[i][1]][0,2]], mode='lines', line=dict(color=rgb_color, width=3)))
 
     return
 
@@ -112,16 +176,14 @@ def draw_box(b, data):
     data.append(go.Scatter3d(x=[b.item(6), b.item(9)], y=[0, 0], z=[b.item(8), b.item(11)],
                              mode='lines', line=dict(color='rgb(0,0,0)', width=3)))
 
+
 # draw a single line
-
-
 def draw_line(b, data):
     data.append(go.Scatter3d(x=[b.item(0), b.item(3)], y=[0, 0], z=[b.item(2), b.item(5)],
                              mode='lines', line=dict(color='rgb(0,0,0)', width=3)))
 
+
 # middle circle
-
-
 def draw_middlecircle(data):
     corners = np.array(make_field_circle(9.15))
     tuples = []
@@ -192,8 +254,6 @@ def plot_field(data):
 # needs to get extended:
 # - frame number hardcoded
 # - iterate through all cameras available
-
-
 def plot_camera(data, db, name):
     cam = cam_utils.Camera(name, db.calib['00000001']['A'], db.calib['00000001']
                            ['R'], db.calib['00000001']['T'], db.shape[0], db.shape[1])
@@ -436,6 +496,32 @@ def draw_skeleton_on_image(img, poses, cmap_fun, one_color=False, pose_color=Non
 
             if s1 == 0 or s2 == 0:
                 continue
+
+            cv2.line(img, (int(x1), int(y1)), (int(x2), int(y2)),
+                     (int(clr[0]*255), int(clr[1]*255), int(clr[2]*255)), 3)
+
+def draw_skeleton_on_image_2dposes(img, poses, cmap_fun, one_color=False, pose_color=None):
+    limps = np.array(
+        [[0, 1], [1, 2], [2, 3], [3, 4], [1, 5], [5, 6], [6, 7], [1, 11], [11, 12], [12, 13], [1, 8],
+         [8, 9], [9, 10], [14, 15], [16, 17], [0, 14], [0, 15], [14, 16], [15, 17], [8, 11], [2, 8], [5, 11]])
+
+    for i in range(len(poses)):
+        if poses[i] is None:
+            continue
+
+        if one_color:
+            clr = cmap_fun(0.5)
+        else:
+            if pose_color is None:
+                clr = cmap_fun(i / float(len(poses)))
+            else:
+                clr = cmap_fun(pose_color[i])
+
+        for k in range(limps.shape[0]):
+            kp1, kp2 = limps[k, :].astype(int)
+            x1, y1 = poses[kp1][0]
+            x2, y2 = poses[kp2][0]
+
 
             cv2.line(img, (int(x1), int(y1)), (int(x2), int(y2)),
                      (int(clr[0]*255), int(clr[1]*255), int(clr[2]*255)), 3)
