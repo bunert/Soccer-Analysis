@@ -4,6 +4,7 @@ import plotly.graph_objs as go
 import utils.camera as cam_utils
 import cv2
 
+import matplotlib
 import os
 from os import listdir
 from os.path import isfile, join, exists
@@ -525,3 +526,51 @@ def draw_skeleton_on_image_2dposes(img, poses, cmap_fun, one_color=False, pose_c
 
             cv2.line(img, (int(x1), int(y1)), (int(x2), int(y2)),
                      (int(clr[0]*255), int(clr[1]*255), int(clr[2]*255)), 3)
+
+################################################################################
+# Project all players on the frame number image of the given db_cam
+# -> get the players_3d array as argument
+################################################################################
+def project_3dplayers_on_image(db_cam, players_3d, frame):
+    frame_name = db_cam.frame_basenames[frame]
+    camera = cam_utils.Camera("Cam", db_cam.calib[frame_name]['A'], db_cam.calib[frame_name]['R'], db_cam.calib[frame_name]['T'], db_cam.shape[0], db_cam.shape[1])
+
+    cmap = matplotlib.cm.get_cmap('hsv')
+    img = db_cam.get_frame(frame, dtype=np.uint8)
+    for k in range(len(players_3d)):
+        points2d = []
+        for i in range(len(players_3d[k])):
+            tmp, depth = camera.project(players_3d[k][i])
+            behind_points = (depth < 0).nonzero()[0]
+            tmp[behind_points, :] *= -1
+            points2d.append(tmp)
+        draw_skeleton_on_image_2dposes(img, points2d, cmap, one_color=True)
+
+    cv2.imwrite('/home/bunert/Data/test.png',np.uint8(img[:, :, (2, 1, 0)]))
+
+################################################################################
+# Project the players on the frame number image of the given db_cam
+# as arguments
+################################################################################
+def project_2dplayers_on_image(db_cam, players_2d, frame):
+    # if just one player: place in array to get draw working
+    if (players_2d.shape == (18,3)):
+        players_2d = [players_2d]
+    img = db_cam.get_frame(frame, dtype=np.uint8)
+    cmap = matplotlib.cm.get_cmap('hsv')
+    draw_skeleton_on_image(img, players_2d, cmap, one_color=True)
+    cv2.imwrite('/home/bunert/Data/test.png',np.uint8(img[:, :, (2, 1, 0)]))
+
+def project_2dplayerDict_on_image(db_cam, players_2d_dict, frame, player=False):
+    # if just one player: place in array to get draw working
+    cmap = matplotlib.cm.get_cmap('hsv')
+    img = db_cam.get_frame(frame, dtype=np.uint8)
+    if (player):
+        draw_skeleton_on_image(img, [players_2d_dict[4]], cmap, one_color=True)
+    else:
+        players_2d = []
+        for key, value in players_2d_dict.items():
+            players_2d.append(value)
+        draw_skeleton_on_image(img, players_2d, cmap, one_color=True)
+
+    cv2.imwrite('/home/bunert/Data/test.png',np.uint8(img[:, :, (2, 1, 0)]))
