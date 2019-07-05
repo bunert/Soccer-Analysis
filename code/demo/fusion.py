@@ -44,6 +44,7 @@ opt, _ = parser.parse_known_args()
 def init_soccerdata():
     # load corresponding metadata
     db_K1 = soccer.SoccerVideo(os.path.join(opt.path_to_data, 'K1'))
+    db_K1.name = "K1"
     # db_K8 = soccer.SoccerVideo(os.path.join(opt.path_to_data, 'K8'))
     # db_K9 = soccer.SoccerVideo(os.path.join(opt.path_to_data, 'K9'))
     # db_Left = soccer.SoccerVideo(os.path.join(opt.path_to_data, 'Left'))
@@ -377,15 +378,10 @@ def main():
     # print(players_2d_dict[0][4]) #-> all tuples for camera 0 in a list with player number
 
 
-
-
-
-
     ################################################################################
     # To plot the acutal 3D Player List in 3D:
     ################################################################################
     # draw.plot_all_players(players_3d)
-
 
     ################################################################################
     # Project all players (3D) on the image(frame 0) from one Kamera data_dict[0]:
@@ -396,7 +392,7 @@ def main():
     # Draw all players (2D dictionary) on the image (frame 0) from one Kamera data_dict[0]:
     # if just one player, last argument specifies the players number (default=False -> all players)
     ################################################################################
-    # draw.project_2dplayerDict_on_image(data_dict[0], players_2d_dict[0], 0, player=4)
+    draw.project_2dplayerDict_on_image(data_dict[0], players_2d_dict[0], 0, player=4)
 
     ################################################################################
     # Kalman Filter:

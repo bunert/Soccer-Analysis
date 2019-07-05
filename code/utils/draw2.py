@@ -548,9 +548,9 @@ def project_3dplayers_on_image(db_cam, players_3d, frame):
 
     cv2.imwrite('/home/bunert/Data/test.png',np.uint8(img[:, :, (2, 1, 0)]))
 
+
 ################################################################################
 # Project the players on the frame number image of the given db_cam
-# as arguments
 ################################################################################
 def project_2dplayers_on_image(db_cam, players_2d, frame):
     # if just one player: place in array to get draw working
@@ -559,8 +559,14 @@ def project_2dplayers_on_image(db_cam, players_2d, frame):
     img = db_cam.get_frame(frame, dtype=np.uint8)
     cmap = matplotlib.cm.get_cmap('hsv')
     draw_skeleton_on_image(img, players_2d, cmap, one_color=True)
-    cv2.imwrite('/home/bunert/Data/test.png',np.uint8(img[:, :, (2, 1, 0)]))
+    #cv2.imwrite('/home/bunert/Data/test.png',np.uint8(img[:, :, (2, 1, 0)]))
+    #os.path.join(opt.path_to_data, 'K1')
+    cv2.imwrite(os.path.join('/home/bunert/Data/', db_cam.name),np.uint8(img[:, :, (2, 1, 0)]))
 
+
+################################################################################
+# Draw all players (2D dictionary) on the first (frame 0) image from one Kamera db_cam:
+################################################################################
 def project_2dplayerDict_on_image(db_cam, players_2d_dict, frame, player=False):
     # if just one player: place in array to get draw working
     cmap = matplotlib.cm.get_cmap('hsv')
@@ -573,4 +579,5 @@ def project_2dplayerDict_on_image(db_cam, players_2d_dict, frame, player=False):
             players_2d.append(value)
         draw_skeleton_on_image(img, players_2d, cmap, one_color=True)
 
-    cv2.imwrite('/home/bunert/Data/test.png',np.uint8(img[:, :, (2, 1, 0)]))
+    # cv2.imwrite('/home/bunert/Data/test.png',np.uint8(img[:, :, (2, 1, 0)]))
+    cv2.imwrite(os.path.join('/home/bunert/Data/', db_cam.name),np.uint8(img[:, :, (2, 1, 0)]))

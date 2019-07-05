@@ -58,6 +58,7 @@ class SoccerVideo:
         # can use those infos for ball?
         self.ball = {f: None for f in self.frame_basenames}
         self.tracks = None
+        self.name = None
 
         # Make the txt file
         txt_file = join(path_to_dataset, 'youtube.txt')
