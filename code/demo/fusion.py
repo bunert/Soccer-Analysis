@@ -11,9 +11,11 @@ import plotly as py
 import utils.draw2 as draw
 import utils.camera as cam_utils
 import utils.draw2 as draw_utils
+from tqdm import tqdm
 
 import math
 import sys
+import glog
 
 
 
@@ -41,31 +43,41 @@ opt, _ = parser.parse_known_args()
 # names: db_K1, db_K8, db_K9, db_Left, db_Right
 # example: print(db_K1.poses["00000009"][0])
 ################################################################################
-def init_soccerdata():
+def init_soccerdata(mylist):
     # load corresponding metadata
     db_K1 = soccer.SoccerVideo(os.path.join(opt.path_to_data, 'K1'))
     db_K1.name = "K1"
-    # db_K8 = soccer.SoccerVideo(os.path.join(opt.path_to_data, 'K8'))
-    # db_K9 = soccer.SoccerVideo(os.path.join(opt.path_to_data, 'K9'))
-    # db_Left = soccer.SoccerVideo(os.path.join(opt.path_to_data, 'Left'))
-    # db_Right = soccer.SoccerVideo(os.path.join(opt.path_to_data, 'Right'))
+    db_K8 = soccer.SoccerVideo(os.path.join(opt.path_to_data, 'K8'))
+    db_K8.name = "K8"
+    db_K9 = soccer.SoccerVideo(os.path.join(opt.path_to_data, 'K9'))
+    db_K9.name = "K9"
+    db_Left = soccer.SoccerVideo(os.path.join(opt.path_to_data, 'Left'))
+    db_Left.name = "Left"
+    db_Right = soccer.SoccerVideo(os.path.join(opt.path_to_data, 'Right'))
+    db_Right.name = "Right"
 
+    data_dict = {}
+    if 0 in mylist:
+        db_K1.digest_metadata()
+        db_K1.refine_poses(keypoint_thresh=7, score_thresh=0.4, neck_thresh=0.4)
+        data_dict.update({0:db_K1})
+    if 1 in mylist:
+        db_K8.digest_metadata()
+        db_K8.refine_poses(keypoint_thresh=7, score_thresh=0.4, neck_thresh=0.4)
+        data_dict.update({1:db_K8})
+    if 2 in mylist:
+        db_K9.digest_metadata()
+        db_K9.refine_poses(keypoint_thresh=7, score_thresh=0.4, neck_thresh=0.4)
+        data_dict.update({2:db_K9})
+    if 3 in mylist:
+        db_Left.digest_metadata()
+        db_Left.refine_poses(keypoint_thresh=7, score_thresh=0.4, neck_thresh=0.4)
+        data_dict.update({3:db_Left})
+    if 4 in mylist:
+        db_Right.digest_metadata()
+        db_Right.refine_poses(keypoint_thresh=7, score_thresh=0.4, neck_thresh=0.4)
+        data_dict.update({4:db_Right})
 
-    db_K1.digest_metadata()
-    # db_K8.digest_metadata()
-    # db_K9.digest_metadata()
-    # db_Left.digest_metadata()
-    # db_Right.digest_metadata()
-
-    db_K1.refine_poses(keypoint_thresh=7, score_thresh=0.4, neck_thresh=0.4)
-    # db_K8.refine_poses(keypoint_thresh=7, score_thresh=0.4, neck_thresh=0.4)
-    # db_K9.refine_poses(keypoint_thresh=7, score_thresh=0.4, neck_thresh=0.4)
-    # db_Left.refine_poses(keypoint_thresh=7, score_thresh=0.4, neck_thresh=0.4)
-    # db_Right.refine_poses(keypoint_thresh=7, score_thresh=0.4, neck_thresh=0.4)
-
-    data_dict = {0:db_K1}
-
-    # data_dict = {0:db_K1, 1:db_K8, 2:db_K9, 3:db_Left, 4:db_Right}
     return data_dict
 
 
@@ -237,18 +249,14 @@ def init_3d_players(x,z,alpha):
 # project each csv player on the field
 # return: array of all player, each player is a matrix
 ################################################################################
-def init_all_3d_players():
-    # Read data from csv files
-    csv_players = init_csv()
-
-    players = []
-
+def init_all_3d_players(csv_players, frame):
+    players = {}
     for i in range(len(csv_players)):
         #Blickrichtung,
         if (i <= 10):
-            players.append(init_3d_players(csv_players[i].iloc[0][1],csv_players[i].iloc[0][2],180))
+            players.update({i:init_3d_players(csv_players[i].iloc[frame][1],csv_players[i].iloc[frame][2],180)})
         else:
-            players.append(init_3d_players(csv_players[i].iloc[0][1],csv_players[i].iloc[0][2],0))
+            players.update({i:init_3d_players(csv_players[i].iloc[frame][1],csv_players[i].iloc[frame][2],0)})
 
     return players
 
@@ -259,39 +267,39 @@ def project_players_2D(db_cam, players_3d, frame):
     frame_name = db_cam.frame_basenames[frame]
     camera = cam_utils.Camera("Cam", db_cam.calib[frame_name]['A'], db_cam.calib[frame_name]['R'], db_cam.calib[frame_name]['T'], db_cam.shape[0], db_cam.shape[1])
 
-    players_2d = []
+    players_2d = {}
     cmap = matplotlib.cm.get_cmap('hsv')
     img = db_cam.get_frame(frame, dtype=np.uint8)
-    for k in range(len(players_3d)):
+    for k in players_3d:
         points2d = []
         for i in range(len(players_3d[k])):
             tmp, depth = camera.project(players_3d[k][i])
             behind_points = (depth < 0).nonzero()[0]
             tmp[behind_points, :] *= -1
             points2d.append(tmp)
-        players_2d.append(points2d)
+        players_2d.update({k:points2d})
 
     return players_2d
 
 ################################################################################
-# Project all players on the first image from one Kamera
+# Get all poses from openpose for a specific frame
 ################################################################################
 def get_actual_2D_keypoints(data_dict, frame):
     actual_keypoint_dict = {}
-    for i in range(len(data_dict)):
-        actual_keypoint_dict.update({i: data_dict[i].poses[data_dict[i].frame_basenames[frame]]})
+    for i in data_dict:
+        frame_name = data_dict[i].frame_basenames[frame]
+        actual_keypoint_dict.update({i: data_dict[i].poses[frame_name]})
     return actual_keypoint_dict
 
 ################################################################################
 # Return dictionary for all cameras, with all the poses (players_3d projected on the camera screen)
 ################################################################################
-def project_players_allCameras_2D(data_dict,players_3d, frame):
+def project_players_allCameras_2D(data_dict, players_3d, frame):
     projected_players_2d_dict = {}
-    for i in range(len(data_dict)):
+    for i in data_dict:
         projected_players_2d_dict.update({i:project_players_2D(data_dict[i], players_3d, frame)})
 
     return projected_players_2d_dict
-
 
 
 ################################################################################
@@ -307,7 +315,7 @@ def nearest_player(keypoints, projected_players_2d):
     minimal_distance = sys.float_info.max
     number = False
     distance = 0.
-    for i in range(len(projected_players_2d)):
+    for i in projected_players_2d:
         distance = 0.
         for k in range(len(keypoints)):
             x1, y1 = keypoints[k][0], keypoints[k][1]
@@ -322,14 +330,13 @@ def nearest_player(keypoints, projected_players_2d):
 
     return number, pose
 
-
 ################################################################################
 # Return dictionary for all cameras, with all the poses as tuples with corresponding player numer (0-10 Danmark, 11-21 Swiss)
 ################################################################################
 def assign_player_to_poses(projected_players_2d_dict, keypoint_dict):
     players_2d_dict = {}
-    players_2d = {}
-    for i in range(len(keypoint_dict)):
+    for i in keypoint_dict:
+        players_2d = {}
         for k in range(len(keypoint_dict[i])):
             number,pose = nearest_player(keypoint_dict[i][k], projected_players_2d_dict[i])
             players_2d.update({number:pose})
@@ -337,7 +344,54 @@ def assign_player_to_poses(projected_players_2d_dict, keypoint_dict):
 
     return players_2d_dict
 
+################################################################################
+################################################################################
+# Dumping Videos
+################################################################################
+################################################################################
+def dump_video_poses(data_dict, csv_players, vidtype, fps=25.0, scale=1, mot_tracks=None, one_color=True):
+    if vidtype not in ['kalman', 'test']:
+        raise Exception('Uknown video format')
 
+    glog.info('Dumping {0} video'.format(vidtype))
+
+    for i in data_dict:
+        fourcc = cv2.VideoWriter_fourcc(*'mp4v')  # MP4V
+        out_file = join(data_dict[i].path_to_dataset, data_dict[i].name +'_{0}.mp4'.format(vidtype))
+        # FPS: 5.0
+        out = cv2.VideoWriter(out_file, fourcc, fps,
+                              (data_dict[i].shape[1] // scale, data_dict[i].shape[0] // scale))
+
+        font = cv2.FONT_HERSHEY_SIMPLEX
+        cmap = matplotlib.cm.get_cmap('hsv')
+        if mot_tracks is not None:
+            n_tracks = max(np.unique(mot_tracks[:, 1]))
+
+        for frame, basename in enumerate(tqdm(data_dict[i].frame_basenames)):
+            players_3d = init_all_3d_players(csv_players, frame)
+            projected_players_2d_dict = project_players_allCameras_2D(data_dict, players_3d, frame)
+
+            img = data_dict[i].get_frame(frame, dtype=np.uint8)
+
+            # draw_skeleton_on_image_2dposes(img, poses, cmap_fun, one_color=False, pose_color=None)
+
+            if vidtype == 'test':
+                # Pose (db_cam, players_2d, frame, player=False)
+                for k in range (len(projected_players_2d_dict[i])):
+                    draw.draw_skeleton_on_image_2dposes(img, projected_players_2d_dict[i][k], cmap, one_color=True)
+
+            if vidtype == 'kalman':
+                # Pose
+                for k in range (len(projected_players_2d_dict[i])):
+                    draw.draw_skeleton_on_image_2dposes(img, projected_players_2d_dict[i][k], cmap, one_color=True)
+
+
+            img = cv2.resize(img, (data_dict[i].shape[1] // scale, data_dict[i].shape[0] // scale))
+            out.write(np.uint8(img[:, :, (2, 1, 0)]))
+
+        # Release everything if job is finished
+        out.release()
+        cv2.destroyAllWindows()
 
 
 ################################################################################
@@ -352,47 +406,70 @@ def main():
     ################################################################################
     # Read camera data
     # data_dict = {0:db_K1, 1:db_K8, 2:db_K9, 3:db_Left, 4:db_Right}
-    data_dict = init_soccerdata()
-    # print(data_dict[0].poses[data_dict[0].frame_basenames[2]][1]) # -> keypoints of second person (1) from third frame (2) from db_K1 (0)
+    data_dict = init_soccerdata([0,1,2,3,4])
+    # data_dict = init_soccerdata([0,1,2,3,4])
+
+    # Read data from csv files
+    csv_players = init_csv()
+
+    # list of all player in 3D (0-10 Denmar, 11-21 Swiss) -> matrix of the keypoints
+    # initialized from x-z positions from csv files
+    # players_3d[camera][player_number][keypoint]
+
+    # players_3d = init_all_3d_players(csv_players, 0)
 
 
-    # all 3D player positions from csv x-z location
-    # use: players_3d[x] -> matrix of player number x with each row a keypoint
-    # 0-10: Denmark, 11-21: Swiss
-    players_3d = init_all_3d_players()
+    # Project the 3D players to get dictionaries with the player numbers as key (0-10 Danmark, 11-21 Swiss)
+    # projected_players_2d_dict[camera][player_number][keypoint]: [[x,y]]
 
-    # dictionary for all 5 cameras
-    # all the poses (from SoccerVideo DB) in it for a specific frame number
-    # [x, y, prec.]
-    keypoint_dict = get_actual_2D_keypoints(data_dict, 0)
-    # print(keypoint_dict[0][1][2][0]) # camera (0): db_K1, person(1): second person, keypoint (2): COCO model
+    # projected_players_2d_dict = project_players_allCameras_2D(data_dict, players_3d, 0)
 
-    # dictionary for all 5 cameras
-    # all the poses (players_3d projected on the camera screen)
-    projected_players_2d_dict = project_players_allCameras_2D(data_dict,players_3d, 0)
-    # print(projected_players_2d_dict[0][1]) # camera(0): db_K1, person: 1
 
-    # dictionary for all 5 cameras
-    # all the poses for a player as tuple with corresponding player numer (0-10 Danmark, 11-21 Swiss)
-    players_2d_dict = assign_player_to_poses(projected_players_2d_dict, keypoint_dict)
-    # print(players_2d_dict[0][4]) #-> all tuples for camera 0 in a list with player number
+    # Openposes (from SoccerVideo DB) in it for a specific frame number -> unordered
+    # keypoint_dict[camera][person][keypoint]: [x, y, prec.]
+
+    # keypoint_dict = get_actual_2D_keypoints(data_dict, 0)
+
+
+    # Keypoints from openpose assigned to player_number as dictionary (0-10 Danmark, 11-21 Swiss)
+    # players_2d_dict[camera][player_number][keypoint]: [x,y,prec]
+
+    # players_2d_dict = assign_player_to_poses(projected_players_2d_dict, keypoint_dict)
+
+
 
 
     ################################################################################
-    # To plot the acutal 3D Player List in 3D:
+    # To plot the actual 3D players in 3D with plotly
     ################################################################################
     # draw.plot_all_players(players_3d)
 
     ################################################################################
-    # Project all players (3D) on the image(frame 0) from one Kamera data_dict[0]:
+    # Project the 3D players on the image (frame)
     ################################################################################
-    # draw.project_3dplayers_on_image(data_dict[0], players_3d, 0)
+    # for i in data_dict:
+    #     draw.project_3d_players_on_image(data_dict[i], players_3d, 0)
 
     ###############################################################################
-    # Draw all players (2D dictionary) on the image (frame 0) from one Kamera data_dict[0]:
+    # Draw all players (2D dictionary) [x,y,prec] on the image (frame 0) from one Kamera data_dict[0]:
     # if just one player, last argument specifies the players number (default=False -> all players)
     ################################################################################
-    draw.project_2dplayerDict_on_image(data_dict[0], players_2d_dict[0], 0, player=4)
+    # for i in data_dict:
+    #     draw.draw_openpose_on_image(data_dict[i], players_2d_dict[i], 0, player=False)
+
+
+    ###############################################################################
+    # Draw all players (2D dictionary) [x,y] on the image (frame 0) from one Kamera data_dict[0]:
+    # if just one player, last argument specifies the players number (default=False -> all players)
+    ################################################################################
+    # for i in data_dict:
+    #    draw.draw_2d_players_on_image(data_dict[i], projected_players_2d_dict[i], 0, player=False)
+
+    ###############################################################################
+    # Dumps a Video for every Camera with the generic skeletons from CSV location projected
+    ###############################################################################
+    # dump_video_poses(data_dict, csv_players, 'test', fps=5.0)
+
 
     ################################################################################
     # Kalman Filter:

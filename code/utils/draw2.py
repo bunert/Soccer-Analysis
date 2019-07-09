@@ -29,7 +29,7 @@ def plot_all_players(players_3d):
     plot_field(plot_data)
 
     rgb_color = 'rgb(0, 0, 0)'
-    for i in range(len(players_3d)):
+    for i in players_3d:
         if (i == 11):
             rgb_color = 'rgb(255, 8, 0)' #different color for the different teams
         plot_player(players_3d[i], plot_data, rgb_color)
@@ -85,7 +85,7 @@ def plot_all_players(players_3d):
     )
 
     fig = dict(data=plot_data, layout=layout)
-    py.offline.plot(fig, filename='camera.html')
+    py.offline.plot(fig, filename='/home/bunert/Data/results/players.html')
 
 def plot_player(players, plot_data, rgb_color):
     limps = np.array([[0, 1], [1, 2], [2, 3], [3, 4], [1, 5], [5, 6], [6, 7], [1, 11], [11, 12], [12, 13], [1, 8],
@@ -98,10 +98,6 @@ def plot_player(players, plot_data, rgb_color):
              z=[players[limps[i][0]][0,2], players[limps[i][1]][0,2]], mode='lines', line=dict(color=rgb_color, width=3)))
 
     return
-
-
-
-
 
 # higher nn lead to preciser cicles but longer computation
 def make_field_circle(r=9.15, nn=7):
@@ -116,8 +112,6 @@ def make_field_circle(r=9.15, nn=7):
     return [(np.cos(2 * np.pi / n * x) * r, 0, np.sin(2 * np.pi / n * x) * r) for x in range(0, n + 1)]
 
 # sort the polygon to plot the convex hull of the polygon
-
-
 def PolygonSort(corners):
     n = len(corners)
     cx = float(sum(x for x, y in corners)) / n
@@ -130,8 +124,6 @@ def PolygonSort(corners):
     return map(lambda tuple: (tuple[0], tuple[1]), cornersWithAngles)
 
 # return the points for the straight lines of the field
-
-
 def get_field_points_limited():
 
     outer_rectangle = np.array([[-W / 2., 0, H / 2.],
@@ -165,8 +157,6 @@ def get_field_points_limited():
     return [outer_rectangle, left_big_box, right_big_box, left_small_box, right_small_box, mid_line]
 
 # draw a box out of 4 data points
-
-
 def draw_box(b, data):
     data.append(go.Scatter3d(x=[b.item(0), b.item(3)], y=[0, 0], z=[b.item(2), b.item(5)],
                              mode='lines', line=dict(color='rgb(0,0,0)', width=3)))
@@ -183,6 +173,10 @@ def draw_line(b, data):
     data.append(go.Scatter3d(x=[b.item(0), b.item(3)], y=[0, 0], z=[b.item(2), b.item(5)],
                              mode='lines', line=dict(color='rgb(0,0,0)', width=3)))
 
+def connect_points(p1, p2, data):
+    data.append(go.Scatter3d(x=[p1[0], p2[0]], y=[p1[1], p2[1]], z=[p1[2], p2[2]],
+                             mode='lines', line=dict(color='rgb(0,0,0)', width=3)))
+
 
 # middle circle
 def draw_middlecircle(data):
@@ -196,8 +190,6 @@ def draw_middlecircle(data):
     draw_circle(data, x, z)
 
 # draw a cicle
-
-
 def draw_circle(data, x, z):
     for i in range(len(x)-1):
         data.append(go.Scatter3d(x=[x[i], x[i+1]], y=[0, 0], z=[z[i], z[i+1]],
@@ -206,8 +198,6 @@ def draw_circle(data, x, z):
                              mode='lines', line=dict(color='rgb(0,0,0)', width=3)))
 
 # left halft circle
-
-
 def draw_lefthalf_circle(data):
     left_half_circile = np.array(make_field_circle(9.15))
     left_half_circile[:, 0] = left_half_circile[:, 0] - W / 2. + 11.0
@@ -222,8 +212,6 @@ def draw_lefthalf_circle(data):
     draw_circle(data, x, z)
 
 # right half circle
-
-
 def draw_righthalf_circle(data):
     right_half_circile = np.array(make_field_circle(9.15))
     right_half_circile[:, 0] = right_half_circile[:, 0] + W / 2. - 11.0
@@ -238,8 +226,6 @@ def draw_righthalf_circle(data):
     draw_circle(data, x, z)
 
 # plot the whole field
-
-
 def plot_field(data):
     field_list = get_field_points_limited()
     for i in range(len(field_list)):
@@ -256,8 +242,8 @@ def plot_field(data):
 # - frame number hardcoded
 # - iterate through all cameras available
 def plot_camera(data, db, name):
-    cam = cam_utils.Camera(name, db.calib['00000001']['A'], db.calib['00000001']
-                           ['R'], db.calib['00000001']['T'], db.shape[0], db.shape[1])
+    cam = cam_utils.Camera(name, db.calib[db.frame_basenames[0]]['A'], db.calib[db.frame_basenames[0]]
+                           ['R'], db.calib[db.frame_basenames[0]]['T'], db.shape[0], db.shape[1])
 
     data.append(go.Scatter3d(go.Scatter3d(
         x=[cam.get_position().item(0, 0)],
@@ -531,13 +517,13 @@ def draw_skeleton_on_image_2dposes(img, poses, cmap_fun, one_color=False, pose_c
 # Project all players on the frame number image of the given db_cam
 # -> get the players_3d array as argument
 ################################################################################
-def project_3dplayers_on_image(db_cam, players_3d, frame):
+def project_3d_players_on_image(db_cam, players_3d, frame):
     frame_name = db_cam.frame_basenames[frame]
     camera = cam_utils.Camera("Cam", db_cam.calib[frame_name]['A'], db_cam.calib[frame_name]['R'], db_cam.calib[frame_name]['T'], db_cam.shape[0], db_cam.shape[1])
 
     cmap = matplotlib.cm.get_cmap('hsv')
     img = db_cam.get_frame(frame, dtype=np.uint8)
-    for k in range(len(players_3d)):
+    for k in players_3d:
         points2d = []
         for i in range(len(players_3d[k])):
             tmp, depth = camera.project(players_3d[k][i])
@@ -546,38 +532,38 @@ def project_3dplayers_on_image(db_cam, players_3d, frame):
             points2d.append(tmp)
         draw_skeleton_on_image_2dposes(img, points2d, cmap, one_color=True)
 
-    cv2.imwrite('/home/bunert/Data/test.png',np.uint8(img[:, :, (2, 1, 0)]))
+    cv2.imwrite('/home/bunert/Data/results/'+ db_cam.name +  '_3d' + '.jpg',np.uint8(img[:, :, (2, 1, 0)]))
 
 
 ################################################################################
 # Project the players on the frame number image of the given db_cam
 ################################################################################
-def project_2dplayers_on_image(db_cam, players_2d, frame):
-    # if just one player: place in array to get draw working
-    if (players_2d.shape == (18,3)):
-        players_2d = [players_2d]
-    img = db_cam.get_frame(frame, dtype=np.uint8)
+def draw_2d_players_on_image(db_cam, players_2d, frame, player=False):
     cmap = matplotlib.cm.get_cmap('hsv')
-    draw_skeleton_on_image(img, players_2d, cmap, one_color=True)
-    #cv2.imwrite('/home/bunert/Data/test.png',np.uint8(img[:, :, (2, 1, 0)]))
-    #os.path.join(opt.path_to_data, 'K1')
-    cv2.imwrite(os.path.join('/home/bunert/Data/', db_cam.name),np.uint8(img[:, :, (2, 1, 0)]))
+    img = db_cam.get_frame(frame, dtype=np.uint8)
+
+    # if just one player: place in array to get draw working
+    if (player):
+        draw_skeleton_on_image_2dposes(img, players_2d[player], cmap, one_color=True)
+    else:
+        for i in range (len(players_2d)):
+            draw_skeleton_on_image_2dposes(img, players_2d[i], cmap, one_color=True)
+
+    cv2.imwrite('/home/bunert/Data/results/'+ db_cam.name + '_2d' + '.jpg',np.uint8(img[:, :, (2, 1, 0)]))
 
 
 ################################################################################
 # Draw all players (2D dictionary) on the first (frame 0) image from one Kamera db_cam:
+# players_2d_dict: [[x,y,prec]]
 ################################################################################
-def project_2dplayerDict_on_image(db_cam, players_2d_dict, frame, player=False):
+def draw_openpose_on_image(db_cam, players_2d_dict, frame, player=False):
     # if just one player: place in array to get draw working
     cmap = matplotlib.cm.get_cmap('hsv')
     img = db_cam.get_frame(frame, dtype=np.uint8)
     if (player):
-        draw_skeleton_on_image(img, [players_2d_dict[4]], cmap, one_color=True)
+        print("Just one player projected")
+        draw_skeleton_on_image(img, [players_2d_dict[player]], cmap, one_color=True)
     else:
-        players_2d = []
-        for key, value in players_2d_dict.items():
-            players_2d.append(value)
+        players_2d = [ v for v in players_2d_dict.values() ]
         draw_skeleton_on_image(img, players_2d, cmap, one_color=True)
-
-    # cv2.imwrite('/home/bunert/Data/test.png',np.uint8(img[:, :, (2, 1, 0)]))
-    cv2.imwrite(os.path.join('/home/bunert/Data/', db_cam.name),np.uint8(img[:, :, (2, 1, 0)]))
+    cv2.imwrite('/home/bunert/Data/results/'+ db_cam.name + '_openpose' + '.jpg',np.uint8(img[:, :, (2, 1, 0)]))

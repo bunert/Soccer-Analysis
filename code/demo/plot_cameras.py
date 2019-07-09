@@ -53,6 +53,25 @@ draw.plot_camera(data, db_Right, "Right")
 draw.plot_camera(data, db_K9, "K9")
 
 
+# Try to plot camera intrinsic frostum:
+# ---------------------------------------------------------------
+# cam = cam_utils.Camera("K1", db_K1.calib[db_K1.frame_basenames[0]]['A'], db_K1.calib[db_K1.frame_basenames[0]]
+#                        ['R'], db_K1.calib[db_K1.frame_basenames[0]]['T'], db_K1.shape[0], db_K1.shape[1])
+#
+#
+#
+# vec = np.array([0,0,1])
+# dir = cam.R.T.dot(vec.T)
+# dir *= 10 # cam.A[0][0] # 10 good value
+# dir = dir+[cam.get_position().item(0, 0), cam.get_position().item(1, 0), cam.get_position().item(2, 0)]
+#
+# cam_vec = np.array([cam.get_position().item(0, 0), cam.get_position().item(1, 0), cam.get_position().item(2, 0)])
+#
+# draw.connect_points(dir, cam_vec, data)
+
+# ---------------------------------------------------------------
+
+
 # layout parameters
 layout = dict(
     width=1500,
@@ -104,4 +123,4 @@ layout = dict(
 )
 
 fig = dict(data=data, layout=layout)
-py.offline.plot(fig, filename='camera.html')
+py.offline.plot(fig, filename='/home/bunert/Data/results/camera.html')

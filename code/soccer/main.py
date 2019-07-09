@@ -42,6 +42,7 @@ class SoccerVideo:
 
         # save the poses from openpose
         self.poses = {f: None for f in self.frame_basenames}
+        self.estimated_poses = {f: None for f in self.frame_basenames}
 
         # number of frames
         self.n_frames = len(self.frame_basenames)
