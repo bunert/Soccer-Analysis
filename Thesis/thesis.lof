@@ -1,0 +1,11 @@
+\babel@toc {english}{}
+\addvspace {10pt}
+\contentsline {figure}{\numberline {1.1}{\ignorespaces Freekick Analysis.}}{1}{figure.1.1}
+\addvspace {10pt}
+\addvspace {10pt}
+\contentsline {figure}{\numberline {3.1}{\ignorespaces Overview of the workflow. Each step gets described in detail during this chapter. The gray area is the process for each camera separately while in the blue area the different cameras are merged.}}{5}{figure.3.1}
+\contentsline {figure}{\numberline {3.2}{\ignorespaces Triangulation visualization of two images with the camera's focal length $O_1$ and $O_2$. The ideal case with perfect measurements in green and the case of measurements with arbitrary accuracy in blue.}}{6}{figure.3.2}
+\contentsline {figure}{\numberline {3.3}{\ignorespaces Complete picture of the calculations during the two-step process of the Extended Kalman Filter. For the Initialization the values of the first state vector and the error covariance are needed. A new measurement vector is given to the filter for each Measurement Update step. }}{7}{figure.3.3}
+\addvspace {10pt}
+\addvspace {10pt}
+\addvspace {10pt}

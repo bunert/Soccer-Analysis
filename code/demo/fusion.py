@@ -25,7 +25,7 @@ np.set_printoptions(threshold=sys.maxsize)
 # hardcoded number of frame (-> Soccer.n_frames)
 number_of_frames = 328
 number_of_keypoints = 18
-number_of_cameras = 5
+number_of_cameras = 3
 
 
 ################################################################################
@@ -169,7 +169,7 @@ def init_csv():
             sep = ';', decimal=",", skiprows=5, usecols=[0,1,2], nrows=505, names=['time', 'x', 'y']))
 
     for i in range(len(players)):
-        players[i]['y'] -= 32.75
+        players[i]['y'] -= 34. #32.75
         players[i]['x'] *= 1.03693
         players[i]['y'] *= -1.03419847328
 
@@ -420,7 +420,7 @@ def dump_video_poses(data_dict, all_players_3d, vidtype, fps=25.0, scale=1, mot_
             n_tracks = max(np.unique(mot_tracks[:, 1]))
 
         for frame, basename in enumerate(tqdm(data_dict[i].frame_basenames)):
-            if (frame > 100):
+            if (frame >= len(all_players_3d)):
                 break
             players_3d_dict = state_to_player_3d_dict(all_players_3d[frame])
             projected_players_2d_dict = project_players_allCameras_2D(data_dict, players_3d_dict, frame)
@@ -454,36 +454,87 @@ def dump_video_poses(data_dict, all_players_3d, vidtype, fps=25.0, scale=1, mot_
 ################################################################################
 ################################################################################
 
-def get_actual_z_vector(data_dict, players_2d_dict, player_number, projected_new_z):
+def get_actual_z_vector(data_dict, players_2d_dict, player_number, projected_new_z, kalman_dict, frame):
     actual_z = np.zeros((number_of_keypoints * (2*number_of_cameras),1))
-    #print("player number: ", player_number)
 
     for camera in data_dict:
-
+        #print("\nCamera", camera)
         camera_offset = camera*2
 
         # openpose keypoint available
         if player_number in players_2d_dict[camera].keys():
-            #print("Openpose keypoint for camera ", camera, " exists")
+            #print("Openpose key exists")
 
             for index in range (number_of_keypoints):
 
                 actual_index = index*(2*number_of_cameras) + camera_offset
 
                 if (players_2d_dict[camera][player_number][index,2] == 0): #confidence = 0
-                    actual_z[actual_index]   = projected_new_z[actual_index]
-                    actual_z[actual_index+1] = projected_new_z[actual_index+1]
-                else:
+                    # if keypoint 14,15,16,17 (head) take hardcoded values (proportional to shoulder)
+                    head_x, head_y, head_conf = players_2d_dict[camera][player_number][0,0], players_2d_dict[camera][player_number][0,1], players_2d_dict[camera][player_number][0,2]
+                    left_shoulder_x, left_shoulder_y, left_shoulder_conf = players_2d_dict[camera][player_number][5,0], players_2d_dict[camera][player_number][5,1], players_2d_dict[camera][player_number][5,2]
+                    right_shoulder_x, right_shoulder_y, right_shoulder_conf = players_2d_dict[camera][player_number][2,0], players_2d_dict[camera][player_number][2,1], players_2d_dict[camera][player_number][2,2]
+
+                    if (index in [14,15,16,17] and head_conf != 0 and left_shoulder_conf != 0 and right_shoulder_conf != 0):
+                        # print("Hardcoded head estimate for player ", player_number)
+                        #print("Method: head Keypoint hardcoded ", index)
+                        if (index == 14):
+                            if (right_shoulder_x <= head_x):
+                                actual_z[actual_index] = head_x + ((head_x - right_shoulder_x)/10.)
+                            else:
+                                actual_z[actual_index] = head_x - ((right_shoulder_x - head_x)/10.)
+
+                            actual_z[actual_index+1] = head_y + (head_y - right_shoulder_y)/10.
+
+                        elif (index == 15):
+                            if (left_shoulder_x <= head_x):
+                                actual_z[actual_index] = head_x - ((head_x - left_shoulder_x)/10.)
+                            else:
+                                actual_z[actual_index] = head_x + ((left_shoulder_x - head_x)/10.)
+
+                            actual_z[actual_index+1] = head_y + (head_y - left_shoulder_y)/10.
+
+                        elif (index == 16):
+                            actual_z[actual_index]   = (head_x + right_shoulder_x)/2.
+                            actual_z[actual_index+1] = head_y
+
+                        elif (index == 17):
+                            actual_z[actual_index]   = (head_x + left_shoulder_x)/2.
+                            actual_z[actual_index+1] = head_y
+
+                        else: # should not enter this section
+                            print("Head point not updated for actual measurement vector.")
+
+
+                    else: # confidence == 0 but not a head point or shoulder&head also not found
+
+                        if (frame > 0):
+                            #print("Method: take z from last iteration ", index)
+                            actual_z[actual_index] = kalman_dict.filter.z[actual_index]
+                            actual_z[actual_index+1] = kalman_dict.filter.z[actual_index+1]
+                        else:
+                            #print("Method: take predicted keypoint ", index)
+                            actual_z[actual_index]   = projected_new_z[actual_index]
+                            actual_z[actual_index+1] = projected_new_z[actual_index+1]
+
+                else: # normal case, measurement taken from openpose
+                    #print("Method: normal openpose keypoint taken ", index)
                     actual_z[actual_index]   = players_2d_dict[camera][player_number][index, 0]
                     actual_z[actual_index+1] = players_2d_dict[camera][player_number][index, 1]
 
+                #print("head x" , actual_z[actual_index])
+                #print("head y", actual_z[actual_index+1])
+
         # no openpose keypoint exists
         else:
-            #print("No Openpose keypoint for camera", camera)
+            #print("Openpose key not available.")
             for index in range (number_of_keypoints):
+                #print("Method: no openpose keypoint ", index)
                 actual_index = index*(2*number_of_cameras) + camera_offset
                 actual_z[actual_index]   = projected_new_z[actual_index]
                 actual_z[actual_index+1] = projected_new_z[actual_index+1]
+                #print("x", actual_z[actual_index])
+                #print("y", actual_z[actual_index+1])
 
     return actual_z
 
@@ -513,7 +564,7 @@ def state_to_player_3d_dict(all_players_3d):
 def main():
 
     # Read camera data
-    data_dict = init_soccerdata([0,1,2,3,4])
+    data_dict = init_soccerdata([0,1,2])
 
     # Read data from csv files
     csv_players = init_csv()
@@ -531,14 +582,17 @@ def main():
 
     # prepare a kalman filter for every player
     kalman_dict = {}
+    players = []
     for i in players_3d_dict:
-        kalman_dict.update({i:filter.Kalman(5, 18)})
+        kalman_dict.update({i:filter.Kalman(number_of_cameras, 18)})
         kalman_dict[i].initialize_state(players_3d_dict[i])
+        players.append(kalman_dict[i].filter.x)
+
 
     for actual_frame in range (number_of_frames):
-        if (actual_frame > 100):
+        if (actual_frame > 40):
             break
-        print("Kalman iteration for frame: ", actual_frame)
+        print("\n Kalman iteration for frame: ", actual_frame)
         # get dict for every player with the 3D points
         actual_players_3d_dict = init_all_3d_players(csv_players, actual_frame)
 
@@ -559,7 +613,8 @@ def main():
             projected_new_z = kalman_dict[player_number].Hx(new_state, data_dict)
 
             # get actual measurement vector from openpose or if not available from prediction
-            actual_z = get_actual_z_vector(data_dict, players_2d_dict, player_number, projected_new_z)
+            #print("\n\nget measurement vector z for player ", player_number)
+            actual_z = get_actual_z_vector(data_dict, players_2d_dict, player_number, projected_new_z, kalman_dict[player_number], actual_frame)
 
             # update the EKF
             kalman_dict[player_number].update(actual_z, data_dict)
@@ -571,7 +626,7 @@ def main():
         all_players_3d.append(players)
 
     # dump video with the state vectors
-    dump_video_poses(data_dict, all_players_3d, 'kalman', fps=5.0)
+    dump_video_poses(data_dict, all_players_3d, 'kalman', fps=2.0)
 
 
     ################################################################################

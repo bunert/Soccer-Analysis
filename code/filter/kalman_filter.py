@@ -24,8 +24,8 @@ class Kalman:
         self.keypoint_number = keypoints                # COCO model
         self.frame_number = 0                     # actual interation number of the filter
 
-        self.R_std=0.025                                   # measurement noise: before 1.0
-        self.Q_var=0.3                                     # process/system noise: before 5.0
+        self.R_std=1.0                                   # measurement noise: before 1.0
+        self.Q_var=5.0                                     # process/system noise: before 5.0
 
         # state dimension: [x,y,z,x',y',z'] for 18 keypoints
         self.x_dimension = self.state_dim * self.keypoint_number           # 108
@@ -37,11 +37,11 @@ class Kalman:
         # #Number of pixels in x and y direction where we still accept the filter output.
         # self.threshold = 100
         # Number of frames without update
-        self.frames_without_update = 0
+        # self.frames_without_update = 0
 
         # Number of frames where a keypoint didn't get an update
-        self.keypoints_no_update_count = np.zeros(18)
-        self.frames_without_update_allowed = 5
+        # self.keypoints_no_update_count = np.zeros(18)
+        # self.frames_without_update_allowed = 5
 
 
         #Build State Vector X: [x,y,z,x',y',z'] for each keypoint
@@ -76,6 +76,19 @@ class Kalman:
         ekf.R = np.eye(self.z_dimension) * (self.R_std)
 
         # process noise
+        # TODO: which noise model should be used?
+        # q = Q_discrete_white_noise(dim=2, dt=self.dt, var=self.Q_var)
+        # block = np.matrix([[q[0,0], 0., 0., q[0,1], 0., 0.],
+        #                   [0., q[0,0], 0., 0., q[0,1], 0.],
+        #                   [0., 0., q[0,0], 0., 0., q[0,1]],
+        #                   [q[1,0], 0., 0., q[1,1], 0., 0.],
+        #                   [0., q[1,0], 0., 0., q[1,1], 0.],
+        #                   [0., 0., q[1,0], 0., 0., q[1,1]]])
+        # matrix_list = []
+        # for i in range (self.keypoint_number):
+        #     matrix_list.append(block)
+        # ekf.Q = scipy.linalg.block_diag(*matrix_list)
+
         ekf.Q = np.eye(self.x_dimension) * (self.Q_var)
 
         self.filter = ekf
@@ -94,12 +107,13 @@ class Kalman:
             new_state.append(positions_3D[i,1])
             # z coordinate
             new_state.append(positions_3D[i,2])
+
             # x velocity
-            new_state.append(0.)
+            new_state.append(5.)
             # y velocity (vertical up)
             new_state.append(0.)
             # z velocity
-            new_state.append(0.)
+            new_state.append(5.)
 
         self.filter.x = np.array([new_state]).T
 

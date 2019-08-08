@@ -1,0 +1,42 @@
+\changetocdepth {2}
+\babel@toc {english}{}
+\contentsline {chapter}{Abstract}{i}{Doc-Start}
+\contentsline {chapter}{Contents}{iii}{section*.1}
+\contentsline {chapter}{List of Figures}{v}{section*.2}
+\contentsline {chapter}{List of Tables}{v}{section*.3}
+\contentsline {chapter}{\chapternumberline {1}Introduction}{1}{chapter.1}
+\contentsline {section}{\numberline {1.1}Focus of this Work}{2}{section.1.1}
+\contentsline {subsection}{\numberline {1.1.1}Outlook}{2}{subsection.1.1.1}
+\contentsline {section}{\numberline {1.2}Thesis Organization}{2}{section.1.2}
+\contentsline {chapter}{\chapternumberline {2}Related Work}{3}{chapter.2}
+\contentsline {section}{\numberline {2.1}Body Tracking}{3}{section.2.1}
+\contentsline {section}{\numberline {2.2}Depth Estimation}{3}{section.2.2}
+\contentsline {section}{\numberline {2.3}Soccer on Your Tabletop}{3}{section.2.3}
+\contentsline {subsection}{\numberline {2.3.1}Calibration}{3}{subsection.2.3.1}
+\contentsline {subsection}{\numberline {2.3.2}Detectron}{3}{subsection.2.3.2}
+\contentsline {subsection}{\numberline {2.3.3}OpenPose}{3}{subsection.2.3.3}
+\contentsline {subsection}{\numberline {2.3.4}Depth map estimation}{3}{subsection.2.3.4}
+\contentsline {section}{\numberline {2.4}Filterpy}{3}{section.2.4}
+\contentsline {chapter}{\chapternumberline {3}Method}{5}{chapter.3}
+\contentsline {section}{\numberline {3.1}Calibration}{5}{section.3.1}
+\contentsline {subsection}{\numberline {3.1.1}Camera Matrix}{6}{subsection.3.1.1}
+\contentsline {subsection}{\numberline {3.1.2}Line Detection}{6}{subsection.3.1.2}
+\contentsline {section}{\numberline {3.2}Player Detection}{6}{section.3.2}
+\contentsline {section}{\numberline {3.3}2D Pose Estimation}{6}{section.3.3}
+\contentsline {section}{\numberline {3.4}2D Refinement \& mapping}{6}{section.3.4}
+\contentsline {section}{\numberline {3.5}3D Pose Estimation}{6}{section.3.5}
+\contentsline {subsection}{\numberline {3.5.1}Triangulation}{6}{subsection.3.5.1}
+\contentsline {subsection}{\numberline {3.5.2}Extended Kalman Filter}{7}{subsection.3.5.2}
+\contentsline {subsection}{\numberline {3.5.3}Designing the EKF}{8}{subsection.3.5.3}
+\contentsline {subsubsection}{State and Measurement}{8}{section*.4}
+\contentsline {subsubsection}{Process Model}{9}{section*.5}
+\contentsline {subsubsection}{Noise}{10}{section*.6}
+\contentsline {subsubsection}{Kalman gain and Error covariance}{10}{section*.7}
+\contentsline {subsubsection}{Measurement Model}{10}{section*.8}
+\contentsline {subsubsection}{Jacobian Matrix H}{12}{section*.9}
+\contentsline {subsubsection}{State Initialization}{14}{section*.10}
+\contentsline {chapter}{\chapternumberline {4}Evaluation and Discussion}{15}{chapter.4}
+\contentsline {chapter}{\chapternumberline {5}Conclusion}{17}{chapter.5}
+\contentsline {section}{\numberline {5.1}Future Work}{17}{section.5.1}
+\contentsline {appendix}{\chapternumberline {A}Appendix}{19}{appendix.A}
+\contentsline {chapter}{Bibliography}{21}{section*.12}

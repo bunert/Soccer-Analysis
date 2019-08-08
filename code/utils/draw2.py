@@ -97,7 +97,6 @@ def plot_player(players, plot_data, rgb_color):
         plot_data.append(go.Scatter3d(x=[players[limps[i][0]][0,0], players[limps[i][1]][0,0]], y=[players[limps[i][0]][0,1], players[limps[i][1]][0,1]],
              z=[players[limps[i][0]][0,2], players[limps[i][1]][0,2]], mode='lines', line=dict(color=rgb_color, width=3)))
 
-    return
 
 # higher nn lead to preciser cicles but longer computation
 def make_field_circle(r=9.15, nn=7):

@@ -1,0 +1,33 @@
+\BOOKMARK [0][-]{Doc-Start}{Abstract}{}% 1
+\BOOKMARK [0][-]{section*.1}{Contents}{}% 2
+\BOOKMARK [0][-]{section*.2}{List of Figures}{}% 3
+\BOOKMARK [0][-]{section*.3}{List of Tables}{}% 4
+\BOOKMARK [0][-]{chapter.1}{Introduction}{}% 5
+\BOOKMARK [1][-]{section.1.1}{Focus of this Work}{chapter.1}% 6
+\BOOKMARK [2][-]{subsection.1.1.1}{Outlook}{section.1.1}% 7
+\BOOKMARK [1][-]{section.1.2}{Thesis Organization}{chapter.1}% 8
+\BOOKMARK [0][-]{chapter.2}{Related Work}{}% 9
+\BOOKMARK [1][-]{section.2.1}{Body Tracking}{chapter.2}% 10
+\BOOKMARK [1][-]{section.2.2}{Depth Estimation}{chapter.2}% 11
+\BOOKMARK [1][-]{section.2.3}{Soccer on Your Tabletop}{chapter.2}% 12
+\BOOKMARK [2][-]{subsection.2.3.1}{Calibration}{section.2.3}% 13
+\BOOKMARK [2][-]{subsection.2.3.2}{Detectron}{section.2.3}% 14
+\BOOKMARK [2][-]{subsection.2.3.3}{OpenPose}{section.2.3}% 15
+\BOOKMARK [2][-]{subsection.2.3.4}{Depth map estimation}{section.2.3}% 16
+\BOOKMARK [1][-]{section.2.4}{Filterpy}{chapter.2}% 17
+\BOOKMARK [0][-]{chapter.3}{Method}{}% 18
+\BOOKMARK [1][-]{section.3.1}{Calibration}{chapter.3}% 19
+\BOOKMARK [2][-]{subsection.3.1.1}{Camera Matrix}{section.3.1}% 20
+\BOOKMARK [2][-]{subsection.3.1.2}{Line Detection}{section.3.1}% 21
+\BOOKMARK [1][-]{section.3.2}{Player Detection}{chapter.3}% 22
+\BOOKMARK [1][-]{section.3.3}{2D Pose Estimation}{chapter.3}% 23
+\BOOKMARK [1][-]{section.3.4}{2D Refinement \046 mapping}{chapter.3}% 24
+\BOOKMARK [1][-]{section.3.5}{3D Pose Estimation}{chapter.3}% 25
+\BOOKMARK [2][-]{subsection.3.5.1}{Triangulation}{section.3.5}% 26
+\BOOKMARK [2][-]{subsection.3.5.2}{Extended Kalman Filter}{section.3.5}% 27
+\BOOKMARK [2][-]{subsection.3.5.3}{Designing the EKF}{section.3.5}% 28
+\BOOKMARK [0][-]{chapter.4}{Evaluation and Discussion}{}% 29
+\BOOKMARK [0][-]{chapter.5}{Conclusion}{}% 30
+\BOOKMARK [1][-]{section.5.1}{Future Work}{chapter.5}% 31
+\BOOKMARK [0][-]{appendix.A}{Appendix}{}% 32
+\BOOKMARK [0][-]{section*.12}{Bibliography}{}% 33

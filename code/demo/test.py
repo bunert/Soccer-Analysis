@@ -8,7 +8,18 @@ from scipy.linalg import block_diag, norm
 import numpy as np
 from filterpy.common import Q_discrete_white_noise
 import utils.camera as cam_utils
+import scipy
 
-index = 16
+q = Q_discrete_white_noise(dim=2, dt=0.04 , var=0.3)
+block = np.matrix([[q[0,0], 0., 0., q[0,1], 0., 0.],
+                  [0., q[0,0], 0., 0., q[0,1], 0.],
+                  [0., 0., q[0,0], 0., 0., q[0,1]],
+                  [q[1,0], 0., 0., q[1,1], 0., 0.],
+                  [0., q[1,0], 0., 0., q[1,1], 0.],
+                  [0., 0., q[1,0], 0., 0., q[1,1]]])
+matrix_list = []
+for i in range (18):
+    matrix_list.append(block)
+Q = scipy.linalg.block_diag(*matrix_list)
 
-print(index in [16,17,18,19])
+print(Q.shape)

@@ -1,0 +1,64 @@
+\begin{thebibliography}{10}
+
+\bibitem{worldcup}
+{FIFA}.
+\newblock {2018 World Cup Russia}.
+\newblock
+  \url{https://www.fifa.com/worldcup/news/more-than-half-the-world-watched-record-breaking-2018-world-cup}.
+\newblock [3-August-2019].
+
+\bibitem{intel}
+{Intel}.
+\newblock True view.
+\newblock
+  \url{https://www.intel.co.uk/content/www/uk/en/sports/technology/true-view.html}.
+\newblock [3-August-2019].
+
+\bibitem{filterpybook}
+Roger Labbe.
+\newblock {\em {Kalman and Bayesian Filters in Python}}.
+\newblock 2018.
+
+\bibitem{filterpydoc}
+{Labbe, Roger}.
+\newblock {FilterPy Documentation}.
+\newblock \url{https://filterpy.readthedocs.io/en/latest/}.
+\newblock [3-August-2019].
+
+\bibitem{filterpygithub}
+{Labbe, Roger}.
+\newblock {Github}.
+\newblock \url{https://github.com/rlabbe/filterpy}.
+\newblock [3-August-2019].
+
+\bibitem{hawk}
+{Michael Bane}.
+\newblock {How Hawk-Eye ball tracking can improve tennis performance}.
+\newblock
+  \url{https://phys.org/news/2015-01-hawk-eye-ball-tracking-tennis.html}.
+\newblock [3-August-2019].
+
+\bibitem{openpose}
+{OpenPose}.
+\newblock {Github}.
+\newblock \url{https://github.com/CMU-Perceptual-Computing-Lab/openpose}.
+\newblock [3-August-2019].
+
+\bibitem{vizrt}
+{Vizrt}.
+\newblock The ultimate tools for live sports production.
+\newblock \url{https://www.vizrt.com/sports}.
+\newblock [3-August-2019].
+
+\bibitem{kalmanbook}
+Greg Welch and Gary Bishop.
+\newblock {\em {An Introduction to the Kalman Filter}}.
+\newblock 2006.
+
+\bibitem{triangulation}
+{Wikipedia}.
+\newblock {Triangulation (computer vision)}.
+\newblock \url{https://en.wikipedia.org/wiki/Triangulation_(computer_vision)}.
+\newblock [3-August-2019].
+
+\end{thebibliography}
