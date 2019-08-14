@@ -16,8 +16,8 @@ import plotly as py
 from plotly.tools import FigureFactory as FF
 import scipy
 
-W, H = 104.73, 67.74
-
+# W, H = 104.73, 67.74
+W, H = 103.0, 67.0
 
 ################################################################################
 # plots all players from arguments in plotly
@@ -511,6 +511,23 @@ def draw_skeleton_on_image_2dposes(img, poses, cmap_fun, one_color=False, pose_c
 
             cv2.line(img, (int(x1), int(y1)), (int(x2), int(y2)),
                      (int(clr[0]*255), int(clr[1]*255), int(clr[2]*255)), 3)
+
+def draw_skeleton_on_image_2dposes_color(img, poses, color, lineType):
+    limps = np.array(
+        [[0, 1], [1, 2], [2, 3], [3, 4], [1, 5], [5, 6], [6, 7], [1, 11], [11, 12], [12, 13], [1, 8],
+         [8, 9], [9, 10], [14, 15], [16, 17], [0, 14], [0, 15], [14, 16], [15, 17], [8, 11], [2, 8], [5, 11]])
+
+    for i in range(len(poses)):
+        if poses[i] is None:
+            continue
+
+        for k in range(limps.shape[0]):
+            kp1, kp2 = limps[k, :].astype(int)
+            x1, y1 = poses[kp1][0]
+            x2, y2 = poses[kp2][0]
+
+
+            cv2.line(img, (int(x1), int(y1)), (int(x2), int(y2)), color, lineType)
 
 ################################################################################
 # Project all players on the frame number image of the given db_cam

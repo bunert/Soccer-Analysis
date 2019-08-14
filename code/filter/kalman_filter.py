@@ -15,7 +15,7 @@ import scipy
 
 
 class Kalman:
-    def __init__(self, cameras, keypoints):
+    def __init__(self, cameras, keypoints, R_std, Q_var):
 
         #Variables:
         self.camera_number = cameras                    # number ob cameras
@@ -24,12 +24,12 @@ class Kalman:
         self.keypoint_number = keypoints                # COCO model
         self.frame_number = 0                     # actual interation number of the filter
 
-        self.R_std=1.0                                   # measurement noise: before 1.0
-        self.Q_var=5.0                                     # process/system noise: before 5.0
+        self.R_std=R_std                                   # measurement noise: before 1.0
+        self.Q_var=Q_var                                   # process/system noise: before 5.0
 
         # state dimension: [x,y,z,x',y',z'] for 18 keypoints
         self.x_dimension = self.state_dim * self.keypoint_number           # 108
-        # measurement dimension: [x0, y0, x1, y1, x2,..., x4, y4] screen coord. for all 5 cameras for 18 keypoints
+        # measurement dimension: [x0, y0, x1, y1, x2,..., x_j, y_j] screen coord. for all j cameras for 18 keypoints
         self.z_dimension = self.measurement_dim * self.keypoint_number     # 180
         self.dt = 0.04                                     # time steps: 1/25 FPS
 

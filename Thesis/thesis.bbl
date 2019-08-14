@@ -1,5 +1,49 @@
 \begin{thebibliography}{10}
 
+\bibitem{3dpose}
+Federica Bogo, Angjoo Kanazawa, Christoph Lassner, Peter~V. Gehler, Javier
+  Romero, and Michael~J. Black.
+\newblock Keep it {SMPL:} automatic estimation of 3d human pose and shape from
+  a single image.
+\newblock {\em CoRR}, abs/1607.08128, 2016.
+
+\bibitem{openpose_paper}
+Zhe Cao, Gines Hidalgo, Tomas Simon, Shih{-}En Wei, and Yaser Sheikh.
+\newblock Openpose: Realtime multi-person 2d pose estimation using part
+  affinity fields.
+\newblock {\em CoRR}, abs/1812.08008, 2018.
+
+\bibitem{openpose_example}
+{cedro-blog}.
+\newblock {TensorFlow OpenPose}.
+\newblock \url{http://cedro3.com/ai/tensorflow-openpose/}.
+\newblock [11-August-2019].
+
+\bibitem{opencv}
+OpenCV Documentation.
+\newblock Camera calibration and 3d reconstruction.
+\newblock
+  \url{https://docs.opencv.org/2.4/modules/calib3d/doc/camera_calibration_and_3d_reconstruction.html}.
+
+\bibitem{canny}
+OpenCV Documentation.
+\newblock Canny edge detection.
+\newblock \url{https://docs.opencv.org/3.1.0/da/d22/tutorial_py_canny.html}.
+
+\bibitem{distance_transform}
+OpenCV Documentation.
+\newblock Image segmentation with distance transform and watershed algorithm.
+\newblock
+  \url{https://docs.opencv.org/3.4.3/d2/dbd/tutorial_distance_transform.html}.
+
+\bibitem{depth_map}
+David Eigen, Christian Puhrsch, and Rob Fergus.
+\newblock Depth map prediction from a single image using a multi-scale deep
+  network.
+\newblock In Z.~Ghahramani, M.~Welling, C.~Cortes, N.~D. Lawrence, and K.~Q.
+  Weinberger, editors, {\em Advances in Neural Information Processing Systems
+  27}, pages 2366--2374. Curran Associates, Inc., 2014.
+
 \bibitem{worldcup}
 {FIFA}.
 \newblock {2018 World Cup Russia}.
@@ -7,11 +51,29 @@
   \url{https://www.fifa.com/worldcup/news/more-than-half-the-world-watched-record-breaking-2018-world-cup}.
 \newblock [3-August-2019].
 
+\bibitem{detectron}
+Ross Girshick, Ilija Radosavovic, Georgia Gkioxari, Piotr Doll\'{a}r, and
+  Kaiming He.
+\newblock Detectron.
+\newblock \url{https://github.com/facebookresearch/detectron}, 2018.
+
+\bibitem{depth_estimation}
+Cl{\'{e}}ment Godard, Oisin {Mac Aodha}, and Gabriel~J. Brostow.
+\newblock Unsupervised monocular depth estimation with left-right consistency.
+\newblock {\em CoRR}, abs/1609.03677, 2016.
+
 \bibitem{intel}
 {Intel}.
 \newblock True view.
 \newblock
   \url{https://www.intel.co.uk/content/www/uk/en/sports/technology/true-view.html}.
+\newblock [3-August-2019].
+
+\bibitem{intelvideo}
+{Intel}.
+\newblock Video: Arsenal fc adds intel true view technology.
+\newblock
+  \url{https://newsroom.intel.com/video-archive/video-arsenal-fc-adds-intel-true-view-technology/#gs.vfza9k}.
 \newblock [3-August-2019].
 
 \bibitem{filterpybook}
@@ -27,9 +89,29 @@ Roger Labbe.
 
 \bibitem{filterpygithub}
 {Labbe, Roger}.
-\newblock {Github}.
+\newblock {Github: Filterpy}.
 \newblock \url{https://github.com/rlabbe/filterpy}.
 \newblock [3-August-2019].
+
+\bibitem{retinenet}
+Tsung{-}Yi Lin, Priya Goyal, Ross~B. Girshick, Kaiming He, and Piotr
+  Doll{\'{a}}r.
+\newblock Focal loss for dense object detection.
+\newblock {\em CoRR}, abs/1708.02002, 2017.
+
+\bibitem{smpl}
+Matthew Loper, Naureen Mahmood, Javier Romero, Gerard Pons-Moll, and Michael~J.
+  Black.
+\newblock {SMPL}: A skinned multi-person linear model.
+\newblock {\em ACM Trans. Graphics (Proc. SIGGRAPH Asia)}, 34(6):248:1--248:16,
+  October 2015.
+
+\bibitem{magnetic}
+{Meta Motion}.
+\newblock {Magnetic Motion Capture}.
+\newblock
+  \url{https://metamotion.com/motion-capture/magnetic-motion-capture-1.htm}.
+\newblock [11-August-2019].
 
 \bibitem{hawk}
 {Michael Bane}.
@@ -38,10 +120,67 @@ Roger Labbe.
   \url{https://phys.org/news/2015-01-hawk-eye-ball-tracking-tennis.html}.
 \newblock [3-August-2019].
 
+\bibitem{Nogueira2012MotionCF}
+Pedro Nogueira.
+\newblock Motion capture fundamentals a critical and comparative analysis on
+  real-world applications.
+\newblock 2012.
+
 \bibitem{openpose}
 {OpenPose}.
 \newblock {Github}.
 \newblock \url{https://github.com/CMU-Perceptual-Computing-Lab/openpose}.
+\newblock [3-August-2019].
+
+\bibitem{deepcut}
+Leonid Pishchulin, Eldar Insafutdinov, Siyu Tang, Bjoern Andres, Mykhaylo
+  Andriluka, Peter~V. Gehler, and Bernt Schiele.
+\newblock Deepcut: Joint subset partition and labeling for multi person pose
+  estimation.
+\newblock {\em CoRR}, abs/1511.06645, 2015.
+
+\bibitem{motioncapturetechnologies}
+Basilio Pueo and Jose Jimenez-Olmedo.
+\newblock Application of motion capture technology for sport performance
+  analysis.
+\newblock {\em Retos: nuevas tendencias en educación física, deporte y
+  recreación}, 2017:241--247, 07 2017.
+
+\bibitem{pytorch}
+PyTorch.
+\newblock Github.
+\newblock \url{https://github.com/pytorch/pytorch}.
+
+\bibitem{tabletop}
+Konstantinos Rematas, Ira Kemelmacher-Shlizerman, Brian Curless, and Steve
+  Seitz.
+\newblock Soccer on your tabletop.
+\newblock In {\em CVPR}, 2018.
+
+\bibitem{r-cnn}
+Shaoqing Ren, Kaiming He, Ross~B. Girshick, and Jian Sun.
+\newblock Faster {R-CNN:} towards real-time object detection with region
+  proposal networks.
+\newblock {\em CoRR}, abs/1506.01497, 2015.
+
+\bibitem{microsoft}
+Jamie Shotton, Andrew Fitzgibbon, Andrew Blake, Alex Kipman, Mark Finocchio,
+  Bob Moore, and Toby Sharp.
+\newblock Real-time human pose recognition in parts from a single depth image.
+\newblock In {\em CVPR}. IEEE, June 2011.
+\newblock Best Paper Award.
+
+\bibitem{camerablog}
+Kyle Simek.
+\newblock Computer vision blog: The perspective camera - an interactive tour.
+\newblock \url{http://ksimek.github.io/2012/08/13/introduction/}, 2013.
+
+\bibitem{intelcameras}
+{Telegraph}.
+\newblock {Manchester City, Liverpool and Arsenal agree Intel partnership to
+  bring 360-degree replays to Premier League}.
+\newblock
+  \url{https://www.telegraph.co.uk/football/2019/02/07/manchester-city-liverpool-arsenal-agree-intel-partnership-bring/}.
 \newblock [3-August-2019].
 
 \bibitem{vizrt}
@@ -55,10 +194,39 @@ Greg Welch and Gary Bishop.
 \newblock {\em {An Introduction to the Kalman Filter}}.
 \newblock 2006.
 
+\bibitem{motionWiki}
+{Wikipedia}.
+\newblock {Motion capture}.
+\newblock \url{https://en.wikipedia.org/wiki/Motion_capture#Inertial_systems}.
+\newblock [11-August-2019].
+
+\bibitem{ransac}
+Wikipedia.
+\newblock Random sample consensus (ransac).
+\newblock \url{https://en.wikipedia.org/wiki/Random_sample_consensus}.
+
 \bibitem{triangulation}
 {Wikipedia}.
 \newblock {Triangulation (computer vision)}.
 \newblock \url{https://en.wikipedia.org/wiki/Triangulation_(computer_vision)}.
 \newblock [3-August-2019].
+
+\bibitem{xsensmessi}
+{Xsens}.
+\newblock {Messi in Xsens motion capture suit for FIFA 16}.
+\newblock
+  \url{https://www.xsens.com/news/messi-in-xsens-motion-capture-suit-for-fifa-16/}.
+\newblock [11-August-2019].
+
+\bibitem{xsens}
+{Xsens Technologies B.V.}
+\newblock {An introduction to the beginning of motion capture technology.}
+\newblock \url{https://www.xsens.com/fascination-motion-capture/}.
+\newblock [10-August-2019].
+
+\bibitem{segmentation}
+Fisher Yu and Vladlen Koltun.
+\newblock Multi-scale context aggregation by dilated convolutions.
+\newblock 11 2015.
 
 \end{thebibliography}

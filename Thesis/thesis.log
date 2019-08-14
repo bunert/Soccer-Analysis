@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017/Debian) (preloaded format=pdflatex 2019.3.7)  7 AUG 2019 14:00
+This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017/Debian) (preloaded format=pdflatex 2019.3.7)  14 AUG 2019 13:22
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1243,7 +1243,11 @@ Package uniquecounter Info: New unique counter `rerunfilecheck' on input line 2
 LaTeX Warning: Unused global option(s):
     [titlepage].
 
-(./thesis.aux)
+(./thesis.aux
+
+LaTeX Warning: Label `fig:messi' multiply defined.
+
+)
 \openout1 = `thesis.aux'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 88.
@@ -1522,7 +1526,7 @@ LaTeX Info: Redefining \nameref on input line 88.
 \openout4 = `thesis.out'.
 
 LaTeX Info: Redefining \Ref on input line 88.
-<ETHlogo.pdf, id=136, 179.67125pt x 45.16875pt>
+<ETHlogo.pdf, id=132, 179.67125pt x 45.16875pt>
 File: ETHlogo.pdf Graphic file (type pdf)
 <use ETHlogo.pdf>
 Package pdftex.def Info: ETHlogo.pdf  used on input line 98.
@@ -1587,37 +1591,98 @@ LaTeX Font Info:    Try loading font information for U+esvect on input line 3.
 (/usr/share/texlive/texmf-dist/tex/latex/esvect/uesvect.fd
 File: uesvect.fd 
 ) [3]) [4]
-(./thesis.lof) (./thesis.lot) [5] [6
-
-] (./introduction.tex
-<./images/freekick.jpg, id=231, 2236.355pt x 1279.78125pt>
-File: ./images/freekick.jpg Graphic file (type jpg)
-<use ./images/freekick.jpg>
-Package pdftex.def Info: ./images/freekick.jpg  used on input line 8.
-(pdftex.def)             Requested size: 184.5pt x 105.56763pt.
-
+(./thesis.lof
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
+ [5])
+(./thesis.lot) [6] (./introduction.tex
+<./images/freekick.jpg, id=275, 2236.355pt x 1279.78125pt>
+File: ./images/freekick.jpg Graphic file (type jpg)
+<use ./images/freekick.jpg>
+Package pdftex.def Info: ./images/freekick.jpg  used on input line 9.
+(pdftex.def)             Requested size: 295.20113pt x 168.91602pt.
  [1
+
 
  <./images/freekick.jpg>]
 LaTeX Font Info:    Font shape `OT1/pplx/bx/n' in size <14.4> not available
-(Font)              Font shape `OT1/pplx/b/n' tried instead on input line 15.
-LaTeX Font Info:    Try loading font information for OMS+pplx on input line 25.
+(Font)              Font shape `OT1/pplx/b/n' tried instead on input line 18.
+LaTeX Font Info:    Try loading font information for OMS+pplx on input line 32.
 
-LaTeX Font Info:    No file OMSpplx.fd. on input line 25.
+LaTeX Font Info:    No file OMSpplx.fd. on input line 32.
 
 
 LaTeX Font Warning: Font shape `OMS/pplx/m/n' undefined
 (Font)              using `OMS/cmsy/m/n' instead
-(Font)              for symbol `textbullet' on input line 25.
+(Font)              for symbol `textbullet' on input line 32.
 
-) (./related_work.tex [2]) (./method.tex [3
-
-] [4
+[2]) (./related_work.tex [3] [4
 
 ]
-<./images/overview.jpg, id=264, 963.6pt x 463.7325pt>
+<./images/intelcameras.png, id=310, 1156.32pt x 722.7pt>
+File: ./images/intelcameras.png Graphic file (type png)
+<use ./images/intelcameras.png>
+Package pdftex.def Info: ./images/intelcameras.png  used on input line 7.
+(pdftex.def)             Requested size: 258.29887pt x 161.43156pt.
+ [5 <./images/intelcameras.png (PNG copy)>]
+<./images/messi.jpg, id=331, 1027.84pt x 540.0175pt>
+File: ./images/messi.jpg Graphic file (type jpg)
+<use ./images/messi.jpg>
+Package pdftex.def Info: ./images/messi.jpg  used on input line 28.
+(pdftex.def)             Requested size: 258.29887pt x 135.70444pt.
+
+[6]
+<./images/microsoft.png, id=345, 1343.0175pt x 896.34875pt>
+File: ./images/microsoft.png Graphic file (type png)
+<use ./images/microsoft.png>
+Package pdftex.def Info: ./images/microsoft.png  used on input line 36.
+(pdftex.def)             Requested size: 258.29887pt x 172.38696pt.
+ [7 <./images/messi.jpg> <./images/microsoft.png>]
+<./images/openpose_example.jpg, id=362, 635.37375pt x 361.35pt>
+File: ./images/openpose_example.jpg Graphic file (type jpg)
+<use ./images/openpose_example.jpg>
+Package pdftex.def Info: ./images/openpose_example.jpg  used on input line 46.
+(pdftex.def)             Requested size: 258.29887pt x 146.90283pt.
+<./images/3dpose_example.jpg, id=372, 657.45625pt x 355.3275pt>
+File: ./images/3dpose_example.jpg Graphic file (type jpg)
+<use ./images/3dpose_example.jpg>
+Package pdftex.def Info: ./images/3dpose_example.jpg  used on input line 55.
+(pdftex.def)             Requested size: 258.29887pt x 139.60188pt.
+ [8 <./images/openpose_example.jpg>]
+<./images/tabletop.jpg, id=387, 2660.94125pt x 722.7pt>
+File: ./images/tabletop.jpg Graphic file (type jpg)
+<use ./images/tabletop.jpg>
+Package pdftex.def Info: ./images/tabletop.jpg  used on input line 67.
+(pdftex.def)             Requested size: 369.0pt x 100.21791pt.
+
+
+LaTeX Warning: `h' float specifier changed to `ht'.
+
+[9 <./images/3dpose_example.jpg>] [10 <./images/tabletop.jpg>] [11]
+<./images/keypoints_pose_18.png, id=433, 361.35pt x 479.54156pt>
+File: ./images/keypoints_pose_18.png Graphic file (type png)
+<use ./images/keypoints_pose_18.png>
+Package pdftex.def Info: ./images/keypoints_pose_18.png  used on input line 98.
+
+(pdftex.def)             Requested size: 147.59775pt x 195.87427pt.
+ [12 <./images/keypoints_pose_18.png>]
+<./images/openpose_overview.jpg, id=449, 2748.2675pt x 628.3475pt>
+File: ./images/openpose_overview.jpg Graphic file (type jpg)
+<use ./images/openpose_overview.jpg>
+Package pdftex.def Info: ./images/openpose_overview.jpg  used on input line 108
+.
+(pdftex.def)             Requested size: 369.0pt x 84.36304pt.
+<./images/part_association.jpg, id=454, 1048.91875pt x 348.30125pt>
+File: ./images/part_association.jpg Graphic file (type jpg)
+<use ./images/part_association.jpg>
+Package pdftex.def Info: ./images/part_association.jpg  used on input line 115.
+
+(pdftex.def)             Requested size: 295.20113pt x 98.02325pt.
+ [13 <./images/openpose_overview.jpg>]) (./method.tex [14 <./images/part_associ
+ation.jpg>] [15] [16
+
+]
+<./images/overview.jpg, id=481, 963.6pt x 463.7325pt>
 File: ./images/overview.jpg Graphic file (type jpg)
 <use ./images/overview.jpg>
 Package pdftex.def Info: ./images/overview.jpg  used on input line 5.
@@ -1625,123 +1690,220 @@ Package pdftex.def Info: ./images/overview.jpg  used on input line 5.
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
- [5 <./images/overview.jpg>]
-<./images/TriangulationReal.jpg, id=273, 1029.8475pt x 691.58376pt>
+ [17 <./images/overview.jpg>]
+<./images/TriangulationReal.jpg, id=491, 1029.8475pt x 691.58376pt>
 File: ./images/TriangulationReal.jpg Graphic file (type jpg)
 <use ./images/TriangulationReal.jpg>
-Package pdftex.def Info: ./images/TriangulationReal.jpg  used on input line 36.
+Package pdftex.def Info: ./images/TriangulationReal.jpg  used on input line 38.
 
-(pdftex.def)             Requested size: 221.40225pt x 148.67705pt.
+(pdftex.def)             Requested size: 258.29887pt x 173.4548pt.
 LaTeX Font Info:    Font shape `U/msa/m/n' will be
-(Font)              scaled to size 9.37807pt on input line 37.
+(Font)              scaled to size 9.37807pt on input line 39.
 LaTeX Font Info:    Font shape `U/msa/m/n' will be
-(Font)              scaled to size 7.29405pt on input line 37.
+(Font)              scaled to size 7.29405pt on input line 39.
 LaTeX Font Info:    Font shape `U/msa/m/n' will be
-(Font)              scaled to size 5.21004pt on input line 37.
+(Font)              scaled to size 5.21004pt on input line 39.
 LaTeX Font Info:    Font shape `U/msb/m/n' will be
-(Font)              scaled to size 9.37807pt on input line 37.
+(Font)              scaled to size 9.37807pt on input line 39.
 LaTeX Font Info:    Font shape `U/msb/m/n' will be
-(Font)              scaled to size 7.29405pt on input line 37.
+(Font)              scaled to size 7.29405pt on input line 39.
 LaTeX Font Info:    Font shape `U/msb/m/n' will be
-(Font)              scaled to size 5.21004pt on input line 37.
+(Font)              scaled to size 5.21004pt on input line 39.
 
-Underfull \hbox (badness 10000) in paragraph at lines 33--41
+Underfull \hbox (badness 10000) in paragraph at lines 35--43
 
  []
 
-[6 <./images/TriangulationReal.jpg>]
-<./images/kalman.jpg, id=283, 2084.78876pt x 1249.66875pt>
+
+LaTeX Warning: `h' float specifier changed to `ht'.
+
+[18]
+<./images/kalman.jpg, id=503, 2084.78876pt x 1249.66875pt>
 File: ./images/kalman.jpg Graphic file (type jpg)
 <use ./images/kalman.jpg>
-Package pdftex.def Info: ./images/kalman.jpg  used on input line 51.
+Package pdftex.def Info: ./images/kalman.jpg  used on input line 53.
 (pdftex.def)             Requested size: 369.0pt x 221.1742pt.
 
-Underfull \vbox (badness 1092) has occurred while \output is active []
 
- [7 <./images/kalman.jpg>] [8] [9] [10] [11]
-Underfull \vbox (badness 1072) has occurred while \output is active []
+LaTeX Warning: `h' float specifier changed to `ht'.
 
- [12]
-[13]) (./evaluation_and_discussion.tex [14]) (./conclusion.tex [15
+[19 <./images/TriangulationReal.jpg>]
+Underfull \vbox (badness 1708) has occurred while \output is active []
 
-] [16
+ [20 <./images/kalman.jpg>] [21] [22]
+Underfull \vbox (badness 4168) has occurred while \output is active []
 
-])
-(./appendix.tex [17] [18
+ [23]
+[24]
+Underfull \vbox (badness 4429) has occurred while \output is active []
 
-]) [19] [20
+ [25])
+(./evaluation_and_discussion.tex [26]) (./conclusion.tex [27
+
+] [28
+
+]) [29]
+[30
 
 ] (./thesis.bbl
 bibitemlist
 
-Overfull \hbox (51.59204pt too wide) in paragraph at lines 4--9
+Underfull \hbox (badness 5548) in paragraph at lines 17--21
+[]\OT1/pplx/m/n/10.95 cedro-blog.  Ten-sor-Flow Open-Pose.  [][]$\OT1/cmtt/m/n/
+10.95 http : / / cedro3 . com / ai /
+ []
+
+
+Overfull \hbox (51.59204pt too wide) in paragraph at lines 48--53
 \OT1/cmtt/m/n/10.95 news / more-[]than-[]half-[]the-[]world-[]watched-[]record-
 []breaking-[]2018-[]world-[]cup$[][]\OT1/pplx/m/n/10.95 .
  []
 
+[31
 
-Underfull \hbox (badness 3872) in paragraph at lines 23--27
+]
+Underfull \hbox (badness 10000) in paragraph at lines 73--78
+[]\OT1/pplx/m/n/10.95 Intel.  Video: Ar-se-nal fc adds in-tel true view tech-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 73--78
+\OT1/pplx/m/n/10.95 nol-ogy.  [][]$\OT1/cmtt/m/n/10.95 https : / / newsroom . i
+ntel . com / video-[]archive /
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 73--78
+\OT1/cmtt/m/n/10.95 video-[]arsenal-[]fc-[]adds-[]intel-[]true-[]view-[]technol
+ogy / #gs . vfza9k$[][]\OT1/pplx/m/n/10.95 .
+ []
+
+
+Underfull \hbox (badness 3872) in paragraph at lines 85--89
 []\OT1/pplx/m/n/10.95 Labbe, Roger.  Fil-terPy Doc-u-men-ta-tion.  [][]$\OT1/cm
 tt/m/n/10.95 https : / / filterpy .
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 35--40
+Underfull \hbox (badness 1194) in paragraph at lines 91--95
+[]\OT1/pplx/m/n/10.95 Labbe, Roger.  Github: Fil-terpy.  [][]$\OT1/cmtt/m/n/10.
+95 https : / / github . com / rlabbe /
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 117--122
 []\OT1/pplx/m/n/10.95 Michael Bane.  How Hawk-Eye ball track-ing can im-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 35--40
+Underfull \hbox (badness 10000) in paragraph at lines 117--122
 \OT1/pplx/m/n/10.95 prove ten-nis per-for-mance.  [][]$\OT1/cmtt/m/n/10.95 http
 s : / / phys . org / news /
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 42--46
+Underfull \hbox (badness 10000) in paragraph at lines 130--134
 []\OT1/pplx/m/n/10.95 OpenPose.  Github.  [][]$\OT1/cmtt/m/n/10.95 https : / / 
 github . com /
  []
 
-)
-<declaration-originality.pdf, id=425, 597.55246pt x 845.07718pt>
-File: declaration-originality.pdf Graphic file (type pdf)
-<use declaration-originality.pdf>
-Package pdftex.def Info: declaration-originality.pdf  used on input line 129.
-(pdftex.def)             Requested size: 597.551pt x 845.07512pt.
-File: declaration-originality.pdf Graphic file (type pdf)
-<use declaration-originality.pdf>
-Package pdftex.def Info: declaration-originality.pdf  used on input line 129.
-(pdftex.def)             Requested size: 597.551pt x 845.07512pt.
-<declaration-originality.pdf, id=428, page=1, 597.55246pt x 845.07718pt>
-File: declaration-originality.pdf Graphic file (type pdf)
-<use declaration-originality.pdf, page 1>
-Package pdftex.def Info: declaration-originality.pdf , page1 used on input line
- 129.
-(pdftex.def)             Requested size: 597.551pt x 845.07512pt.
-File: declaration-originality.pdf Graphic file (type pdf)
-<use declaration-originality.pdf, page 1>
-Package pdftex.def Info: declaration-originality.pdf , page1 used on input line
- 129.
-(pdftex.def)             Requested size: 597.57834pt x 845.1138pt.
- [21
+[32]
+Underfull \hbox (badness 7468) in paragraph at lines 179--185
+[]\OT1/pplx/m/n/10.95 Telegraph.  Manch-ester City, Liv-er-pool and Ar-se-nal a
+gree
+ []
 
-]
+
+Underfull \hbox (badness 10000) in paragraph at lines 179--185
+\OT1/pplx/m/n/10.95 In-tel part-ner-ship to bring 360-degree re-plays to Pre-mi
+er
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 179--185
+\OT1/pplx/m/n/10.95 League.  [][]$\OT1/cmtt/m/n/10.95 https : / / www . telegra
+ph . co . uk / football / 2019 / 02 / 07 /
+ []
+
+
+Overfull \hbox (27.09729pt too wide) in paragraph at lines 179--185
+\OT1/cmtt/m/n/10.95 manchester-[]city-[]liverpool-[]arsenal-[]agree-[]intel-[]p
+artnership-[]bring/$[][]\OT1/pplx/m/n/10.95 .
+ []
+
+
+Underfull \hbox (badness 1694) in paragraph at lines 198--202
+[]\OT1/pplx/m/n/10.95 Wikipedia.  Mo-tion cap-ture.  [][]$\OT1/cmtt/m/n/10.95 h
+ttps : / / en . wikipedia . org / wiki /
+ []
+
+
+Underfull \hbox (badness 1803) in paragraph at lines 204--207
+[]\OT1/pplx/m/n/10.95 Wikipedia.  Ran-dom sam-ple con-sen-sus (ransac).  [][]$\
+OT1/cmtt/m/n/10.95 https : / / en .
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 215--220
+[]\OT1/pplx/m/n/10.95 Xsens.  Messi in Xsens mo-tion cap-ture suit
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 215--220
+\OT1/pplx/m/n/10.95 for FIFA 16.  [][]$\OT1/cmtt/m/n/10.95 https : / / www . xs
+ens . com / news /
+ []
+
+
+Underfull \hbox (badness 5022) in paragraph at lines 222--226
+[]\OT1/pplx/m/n/10.95 Xsens Tech-nolo-gies B.V.  An in-tro-duc-tion to the be-g
+in-ning
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 222--226
+\OT1/pplx/m/n/10.95 of mo-tion cap-ture tech-nol-ogy.  [][]$\OT1/cmtt/m/n/10.95
+ https : / / www . xsens . com /
+ []
+
+[33])
+<declaration-originality.pdf, id=682, 597.55246pt x 845.07718pt>
+File: declaration-originality.pdf Graphic file (type pdf)
+<use declaration-originality.pdf>
+Package pdftex.def Info: declaration-originality.pdf  used on input line 130.
+(pdftex.def)             Requested size: 597.551pt x 845.07512pt.
+File: declaration-originality.pdf Graphic file (type pdf)
+<use declaration-originality.pdf>
+Package pdftex.def Info: declaration-originality.pdf  used on input line 130.
+(pdftex.def)             Requested size: 597.551pt x 845.07512pt.
+<declaration-originality.pdf, id=685, page=1, 597.55246pt x 845.07718pt>
 File: declaration-originality.pdf Graphic file (type pdf)
 <use declaration-originality.pdf, page 1>
 Package pdftex.def Info: declaration-originality.pdf , page1 used on input line
- 129.
+ 130.
+(pdftex.def)             Requested size: 597.551pt x 845.07512pt.
+File: declaration-originality.pdf Graphic file (type pdf)
+<use declaration-originality.pdf, page 1>
+Package pdftex.def Info: declaration-originality.pdf , page1 used on input line
+ 130.
+(pdftex.def)             Requested size: 597.57834pt x 845.1138pt.
+ [34]
+File: declaration-originality.pdf Graphic file (type pdf)
+<use declaration-originality.pdf, page 1>
+Package pdftex.def Info: declaration-originality.pdf , page1 used on input line
+ 130.
 (pdftex.def)             Requested size: 597.57834pt x 845.1138pt.
 File: declaration-originality.pdf Graphic file (type pdf)
 <use declaration-originality.pdf, page 1>
 Package pdftex.def Info: declaration-originality.pdf , page1 used on input line
- 129.
+ 130.
 (pdftex.def)             Requested size: 597.57834pt x 845.1138pt.
 File: declaration-originality.pdf Graphic file (type pdf)
 <use declaration-originality.pdf, page 1>
 Package pdftex.def Info: declaration-originality.pdf , page1 used on input line
- 129.
+ 130.
 (pdftex.def)             Requested size: 597.57834pt x 845.1138pt.
- [22 <./declaration-originality.pdf>]
+ [35 <./declaration-originality.pdf>]
 \tf@thm=\write5
 \openout5 = `thesis.thm'.
 
@@ -1754,26 +1916,29 @@ Package pdftex.def Info: declaration-originality.pdf , page1 used on input line
 \tf@lot=\write8
 \openout8 = `thesis.lot'.
 
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 131.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 131.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 132.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 132.
  (./thesis.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 131.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 131.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 132.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 132.
 Package rerunfilecheck Info: File `thesis.out' has not changed.
-(rerunfilecheck)             Checksum: 903A8798FAAEDC4C78871217340224CE;1958.
+(rerunfilecheck)             Checksum: F4ACE2D5C8E7DE025E994447CFDB37B8;1934.
 
 
 LaTeX Font Warning: Some font shapes were not available, defaults substituted.
 
+
+LaTeX Warning: There were multiply-defined labels.
+
  ) 
 Here is how much of TeX's memory you used:
- 16126 strings out of 492982
- 228997 string characters out of 6134897
- 417337 words of memory out of 5000000
- 19188 multiletter control sequences out of 15000+600000
- 49839 words of font info for 145 fonts, out of 8000000 for 9000
+ 16271 strings out of 492982
+ 231507 string characters out of 6134897
+ 426797 words of memory out of 5000000
+ 19271 multiletter control sequences out of 15000+600000
+ 50997 words of font info for 148 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 62i,20n,122p,1010b,539s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 62i,20n,122p,1638b,539s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/share/texlive/texmf-dist/fonts/enc/dvips/base/8r.enc}</usr/share/texliv
 e/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/share/texlive/texm
 f-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texlive/texmf-dist/
@@ -1781,18 +1946,19 @@ fonts/type1/public/amsfonts/cm/cmss10.pfb></usr/share/texlive/texmf-dist/fonts/
 type1/public/amsfonts/cm/cmss12.pfb></usr/share/texlive/texmf-dist/fonts/type1/
 public/amsfonts/cm/cmss9.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/
 amsfonts/cm/cmssbx10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsf
-onts/cm/cmsy10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/c
-m/cmtt10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/mathpazo/fplmr.p
-fb></usr/share/texlive/texmf-dist/fonts/type1/public/mathpazo/fplmri.pfb></usr/
-share/texlive/texmf-dist/fonts/type1/public/fpl/fplrc8a.pfb></usr/share/texlive
-/texmf-dist/fonts/type1/public/amsfonts/symbols/msam10.pfb></usr/share/texlive/
-texmf-dist/fonts/type1/urw/palatino/uplb8a.pfb></usr/share/texlive/texmf-dist/f
-onts/type1/urw/palatino/uplr8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/u
-rw/palatino/uplri8a.pfb>
-Output written on thesis.pdf (30 pages, 2103354 bytes).
+onts/cm/cmssi9.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/c
+m/cmsy10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt
+10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/mathpazo/fplmr.pfb></u
+sr/share/texlive/texmf-dist/fonts/type1/public/mathpazo/fplmri.pfb></usr/share/
+texlive/texmf-dist/fonts/type1/public/fpl/fplrc8a.pfb></usr/share/texlive/texmf
+-dist/fonts/type1/public/amsfonts/symbols/msam10.pfb></usr/share/texlive/texmf-
+dist/fonts/type1/urw/palatino/uplb8a.pfb></usr/share/texlive/texmf-dist/fonts/t
+ype1/urw/palatino/uplr8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/pal
+atino/uplri8a.pfb>
+Output written on thesis.pdf (43 pages, 5051839 bytes).
 PDF statistics:
- 563 PDF objects out of 1000 (max. 8388607)
- 490 compressed objects within 5 object streams
- 122 named destinations out of 1000 (max. 500000)
- 12598 words of extra memory for PDF output out of 14400 (max. 10000000)
+ 829 PDF objects out of 1000 (max. 8388607)
+ 720 compressed objects within 8 object streams
+ 176 named destinations out of 1000 (max. 500000)
+ 12635 words of extra memory for PDF output out of 14400 (max. 10000000)
 

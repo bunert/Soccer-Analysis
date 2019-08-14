@@ -6,6 +6,7 @@ from os import listdir
 from os.path import isfile, join, exists
 import pandas
 import cv2
+import pickle
 import numpy as np
 import matplotlib
 import plotly as py
@@ -168,10 +169,19 @@ def init_csv():
     players.append(pandas.read_csv('/home/bunert/Data/Smash/Switzerland_-_Denmark_Fitness_RAW_data_Switzerland/lib/approximation_data/Mbabu_Kevin.csv',
             sep = ';', decimal=",", skiprows=5, usecols=[0,1,2], nrows=505, names=['time', 'x', 'y']))
 
+    # TODO: field size from ball parameters
+    ball = pandas.read_csv('/home/bunert/Data/Smash/Switzerland_-_Denmark_Fitness_RAW_data_Switzerland/lib/approximation_data/Ball.csv',
+            sep = ';', decimal=",", skiprows=5, usecols=[0,1,2], names=['time', 'x', 'y'])
+
+    ball_min = ball.min()
+    ball_max = ball.max()
+    W = abs(ball_max[1]- ball_min[1])
+    H = abs(ball_max[2]- ball_min[2])
+
     for i in range(len(players)):
-        players[i]['y'] -= 34. #32.75
-        players[i]['x'] *= 1.03693
-        players[i]['y'] *= -1.03419847328
+        players[i]['y'] -= 33.5
+        # players[i]['x'] *= 1.03693
+        players[i]['y'] *= -1
 
     return players
 
@@ -447,6 +457,62 @@ def dump_video_poses(data_dict, all_players_3d, vidtype, fps=25.0, scale=1, mot_
         out.release()
         cv2.destroyAllWindows()
 
+def dump_video_multiple_poses(data_dict, all_players_3d_array, vidtype, rq,  fps=25.0, scale=1, mot_tracks=None, one_color=True):
+    if vidtype not in ['kalman']:
+        raise Exception('Uknown video format')
+
+    glog.info('Dumping {0} video'.format(vidtype))
+
+    length = len(all_players_3d_array[0])
+
+    for i in data_dict:
+        fourcc = cv2.VideoWriter_fourcc(*'mp4v')  # MP4V
+        out_file = join('/home/bunert/Data/results', data_dict[i].name +'_{0}.mp4'.format(vidtype))
+        out = cv2.VideoWriter(out_file, fourcc, fps,
+                              (data_dict[i].shape[1] // scale, data_dict[i].shape[0] // scale))
+
+        font = cv2.FONT_HERSHEY_SIMPLEX
+        cmap = matplotlib.cm.get_cmap('hsv')
+        if mot_tracks is not None:
+            n_tracks = max(np.unique(mot_tracks[:, 1]))
+
+        # rgb(30, 30, 250)
+        # rgb(60, 180, 30)
+        # rgb(250, 10, 10)
+
+        listOfColors = [(30, 30, 250), (250, 10, 10)]
+        for frame, basename in enumerate(tqdm(data_dict[i].frame_basenames)):
+            if (frame >= length):
+                break
+
+            img = data_dict[i].get_frame(frame, dtype=np.uint8)
+
+            for j in range (len(all_players_3d_array)):
+                players_3d_dict = state_to_player_3d_dict(all_players_3d_array[j][frame])
+                projected_players_2d_dict = project_players_allCameras_2D(data_dict, players_3d_dict, frame)
+
+                # draw_skeleton_on_image_2dposes(img, poses, cmap_fun, one_color=False, pose_color=None)
+                if vidtype == 'kalman':
+                    # Pose
+                    for k in range (len(projected_players_2d_dict[i])):
+                        draw.draw_skeleton_on_image_2dposes_color(img, projected_players_2d_dict[i][k], listOfColors[j], 5-3*j)
+
+
+            font                   = cv2.FONT_HERSHEY_SIMPLEX
+            fontScale              = 1
+            fontColor              = (255,255,255)
+            lineType               = 2
+            cv2.putText(img,'frame={0}'.format(frame), (data_dict[i].shape[1] -450 ,50), font, fontScale,fontColor, lineType)
+            cv2.putText(img,'Poses1: R={0}, Q={1}'.format(rq[0], rq[1]), (data_dict[i].shape[1] -450 ,100), font, fontScale,listOfColors[0], lineType)
+            cv2.putText(img,'Poses2: R={0}, Q={1}'.format(rq[2], rq[3]), (data_dict[i].shape[1] -450 ,150), font, fontScale,listOfColors[1], lineType)
+
+            img = cv2.resize(img, (data_dict[i].shape[1] // scale, data_dict[i].shape[0] // scale))
+            out.write(np.uint8(img[:, :, (2, 1, 0)]))
+
+        # Release everything if job is finished
+        out.release()
+        cv2.destroyAllWindows()
+
 
 ################################################################################
 ################################################################################
@@ -553,26 +619,7 @@ def state_to_player_3d_dict(all_players_3d):
     return players
 
 
-
-
-
-################################################################################
-################################################################################
-# Main Function
-################################################################################
-################################################################################
-def main():
-
-    # Read camera data
-    data_dict = init_soccerdata([0,1,2])
-
-    # Read data from csv files
-    csv_players = init_csv()
-
-    # dict of all player in 3D (0-10 Denmar, 11-21 Swiss)
-    players_3d_dict = init_all_3d_players(csv_players, 0)
-
-
+def iterate_kalman(data_dict, csv_players, players_3d_dict, R, Q, number_of_iterations):
     ################################################################################
     # Kalman Filter:
     ################################################################################
@@ -581,16 +628,18 @@ def main():
     all_players_3d = []
 
     # prepare a kalman filter for every player
+    R_std = R
+    Q_var = Q
     kalman_dict = {}
     players = []
     for i in players_3d_dict:
-        kalman_dict.update({i:filter.Kalman(number_of_cameras, 18)})
+        kalman_dict.update({i:filter.Kalman(number_of_cameras, 18, R_std=R_std, Q_var=Q_var)})
         kalman_dict[i].initialize_state(players_3d_dict[i])
         players.append(kalman_dict[i].filter.x)
 
 
     for actual_frame in range (number_of_frames):
-        if (actual_frame > 40):
+        if (actual_frame > number_of_iterations):
             break
         print("\n Kalman iteration for frame: ", actual_frame)
         # get dict for every player with the 3D points
@@ -625,8 +674,55 @@ def main():
         # add all state vectors for one iteration to the list
         all_players_3d.append(players)
 
+        # to store the the data i a pickle file
+        store_data = join('/home/bunert/Data/results/', 'R={0}_Q={1}_data.p'.format(R_std,Q_var))
+        with open(store_data, 'wb') as f:
+            pickle.dump(all_players_3d, f)
+
+
+    return all_players_3d
+
+
+################################################################################
+################################################################################
+# Main Function
+################################################################################
+################################################################################
+def main():
+
+    # Read camera data
+    data_dict = init_soccerdata([0,1,2])
+
+    # Read data from csv files
+    csv_players = init_csv()
+
+    # dict of all player in 3D (0-10 Denmar, 11-21 Swiss)
+    players_3d_dict = init_all_3d_players(csv_players, 0)
+
+    # values for R_std and Q_var for the first EKF
+    r1, q1 = 1., 5.
+
+    # values for R_std and Q_var for the second EKF
+    r2, q2 = 5., 1.
+
+    # number of frames to iterate
+    number_of_iterations = 80
+
+
+    test1 = iterate_kalman(data_dict, csv_players, players_3d_dict, r1, q1, number_of_iterations)
+    test2 = iterate_kalman(data_dict, csv_players, players_3d_dict, r2, q2, number_of_iterations)
+
+    all_players_3d_array = [test1, test2]
+    rq = [r1, q1, r2, q2]
+
+    # to load the pickle data:
+    # store_data = join('/home/bunert/Data/results/', 'R=..._Q=..._data.p')
+    # with open(store_data, 'rb') as f:
+    #     all_players_3d = pickle.load(f)
+
     # dump video with the state vectors
-    dump_video_poses(data_dict, all_players_3d, 'kalman', fps=2.0)
+    #dump_video_poses(data_dict, all_players_3d, 'kalman', fps=2.0)
+    dump_video_multiple_poses(data_dict, all_players_3d_array, 'kalman', rq=rq, fps=2.0)
 
 
     ################################################################################
