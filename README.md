@@ -1,7 +1,8 @@
-# Soccer Analysis
-
-------------------------------------------------------------
+# Soccer Analysis: 3D Pose Estimation from Television Recordings
+Abstract:
 The application of Computer Vision in the field of sports is increasing in numerous areas. The Swiss national soccer team approached the Computer Vision and Geometry Lab at the ETH to explore the possibilities of technologies to analyze soccer games using the existing TV cameras. In the following paper, we present a system that estimates three-dimensional human poses based on TV camera recordings and two-dimensional tracking data of the soccer game. The work is based on existing state-of-the-art algorithms for object detection and human 2D pose estimations. We present an Extended Kalman Filter to fuse the poses from different camera perspectives into world coordinates. The results confirm the feasibility of setting up such a system without large investments compared to other systems which are installed explicitly for this purpose. To achieve the desired accuracy, many points would have to be improved upon.
+
+The whole thesis is included in the repository as PDF for more information.
 
 ![Overview](https://github.com/bunert/BachelorThesis/blob/master/overview.jpg)
 
@@ -37,7 +38,7 @@ DATA
 
 
 ## Pipeline
-As you can see in the Overview picture above, there are several steps which are performed per camera, only the last step for the EKF is performed once for all cameras together. So repeat the pipeline except the last step (fusion) for each camera and then start the final step. Most steps are adapted from the project [Soccer on your Tabletop](https://github.com/krematas/soccerontable), so for more information visit their GitHub page. 
+As you can see in the Overview picture above, there are several steps which are performed per camera, only the last step for the EKF is performed once for all cameras together. So repeat the pipeline except the last step (fusion) for each camera and then start the final step. Most steps are adapted from the project [Soccer on your Tabletop](https://github.com/krematas/soccerontable), so for more information visit their GitHub page.
 ```bash
 git clone git@github.com:bunert/BachelorThesis.git $PROJ
 ```
