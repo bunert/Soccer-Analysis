@@ -1,5 +1,8 @@
 # ignore Theory folder
 /theory
+/Thesis
+/zusatz
+/results
 
 # Byte-compiled / optimized / DLL files
 __pycache__
