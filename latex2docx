@@ -1,3 +1,0 @@
-pandoc -s Thesis/method.tex -o example.docx
-
-convert a section to docx
