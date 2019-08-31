@@ -10,6 +10,8 @@ import cv2
 import matplotlib.pyplot as plt
 from matplotlib.widgets import Button
 
+## SEMESTER PROJECT ##
+from .semesterproject_calibration import get_field_markings, get_field_green, get_image_gradients, validate_white_line
 
 def _fun_distance_transform(params_, dist_map_, points3d):
     theta_x_, theta_y_, theta_z_, fx_, tx_, ty_, tz_ = params_
@@ -169,33 +171,62 @@ def calibrate_by_click(img, mask, edge_sfactor=0.5, field_img_path='./demo/data/
 
 
 def calibrate_from_initialization(img, mask, A_init, R_init, T_init, edge_sfactor=0.5, visualize=False):
+    # set to 1 to use the improvd calibration propagation
+    improved_method = 0
+    validate_pixels = 0 # check if segmented line pixels are on a white line, slow
 
     h, w = img.shape[:2]
 
-    edges = image_utils.robust_edge_detection(
-        cv2.resize(img, None, fx=edge_sfactor, fy=edge_sfactor))
+    if improved_method:
+        G_mag, G_direction = get_image_gradients(img)
 
-    edges = cv2.resize(edges, None, fx=1. / edge_sfactor, fy=1. / edge_sfactor)
-    edges = cv2.Canny(edges.astype(np.uint8) * 255, 100, 200) / 255.0
+        field_green = get_field_green(img)
 
-    mask = cv2.dilate(mask, np.ones((25, 25), dtype=np.uint8))
+        edges = get_field_markings(G_mag, field_green, mask)
 
-    edges = edges * (1 - mask)
-    dist_transf = cv2.distanceTransform((1 - edges).astype(np.uint8), cv2.DIST_L2, 0)
+        if validate_pixels:
+            edges = validate_white_line(img, G_mag, G_direction, edges, field_green)
 
-    cam_init = cam_utils.Camera('tmp', A_init, R_init, T_init, h, w)
-    template, field_mask = draw_utils.draw_field(cam_init)
+        dist_transf = cv2.distanceTransform((1 - edges).astype(np.uint8), cv2.DIST_L2, 0)
+        cam_init = cam_utils.Camera('tmp', A_init, R_init, T_init, h, w)
+        template, field_mask = draw_utils.draw_field(cam_init)
 
-    II, JJ = (template > 0).nonzero()
-    synth_field2d = np.array([[JJ, II]]).T[:, :, 0]
+        II, JJ = (template > 0).nonzero()
+        synth_field2d = np.array([[JJ, II]]).T[:, :, 0]
 
-    field3d = cam_utils.plane_points_to_3d(synth_field2d, cam_init)
+        field3d = cam_utils.plane_points_to_3d(synth_field2d, cam_init)
 
-    A, R, T = _calibrate_camera_dist_transf(A_init, R_init, T_init, dist_transf, field3d)
+        A, R, T = _calibrate_camera_dist_transf(A_init, R_init, T_init, dist_transf, field3d)
+        if visualize:
+            cam_res = cam_utils.Camera('tmp', A, R, T, h, w)
+            field2d, __ = cam_res.project(field3d)
+            io.imshow(img, points=field2d)
 
-    if visualize:
-        cam_res = cam_utils.Camera('tmp', A, R, T, h, w)
-        field2d, __ = cam_res.project(field3d)
-        io.imshow(img, points=field2d)
+    else:
+        edges = image_utils.robust_edge_detection(
+            cv2.resize(img, None, fx=edge_sfactor, fy=edge_sfactor))
+
+        edges = cv2.resize(edges, None, fx=1. / edge_sfactor, fy=1. / edge_sfactor)
+        edges = cv2.Canny(edges.astype(np.uint8) * 255, 100, 200) / 255.0
+
+        mask = cv2.dilate(mask, np.ones((25, 25), dtype=np.uint8))
+
+        edges = edges * (1 - mask)
+        dist_transf = cv2.distanceTransform((1 - edges).astype(np.uint8), cv2.DIST_L2, 0)
+
+        cam_init = cam_utils.Camera('tmp', A_init, R_init, T_init, h, w)
+        template, field_mask = draw_utils.draw_field(cam_init)
+
+        II, JJ = (template > 0).nonzero()
+        synth_field2d = np.array([[JJ, II]]).T[:, :, 0]
+
+        field3d = cam_utils.plane_points_to_3d(synth_field2d, cam_init)
+
+        A, R, T = _calibrate_camera_dist_transf(A_init, R_init, T_init, dist_transf, field3d)
+
+        if visualize:
+            cam_res = cam_utils.Camera('tmp', A, R, T, h, w)
+            field2d, __ = cam_res.project(field3d)
+            io.imshow(img, points=field2d)
 
     return A, R, T, field3d

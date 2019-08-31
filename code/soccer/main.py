@@ -20,6 +20,9 @@ import utils.files as file_utils
 
 from utils.nms.nms_wrapper import nms
 
+## SEMESTER PROJECT ##
+from soccer.calibration.semesterproject_calibration import filter_parameters
+
 
 class SoccerVideo:
     def __init__(self, path_to_dataset):
@@ -144,6 +147,12 @@ class SoccerVideo:
                         np.save(join(self.path_to_dataset, 'calib', '{0}'.format(self.frame_basenames[i])),
                                 {'A': A, 'R': R, 'T': T})
 
+                ## SEMESTER PROJECT ##
+                # Call function that applies a filter on the estimated parameter. Possibly filter_type are 'mean' and 'median',
+                # default is 'mean'. The kernel size defines the number of estimations to consider during filtering, default 5.
+                filter_parameters(join(self.path_to_dataset, 'calib'), filter_type='mean', kernel_size=5)
+                ## END ##
+
             for i, basename in enumerate(tqdm(self.frame_basenames)):
                 calib_npy = np.load(join(self.path_to_dataset, 'calib',
                                          '{0}.npy'.format(basename))).item()
@@ -193,8 +202,11 @@ class SoccerVideo:
                     cv2.imwrite(join(self.path_to_dataset, 'tmp',
                                      '{0}.jpg'.format(j)), crop[:, :, (2, 1, 0)] * 255)
 
+                exit()
+
                 cwd = os.getcwd()
                 os.chdir(openpose_dir)
+                # ./build/examples/openpose/openpose.bin --model_pose COCO --image_dir ~/Data/K1/images --write_json ~/Data/K1/images --write_images ~/Data/K1/results --display 0 --render_pose 0
 
                 # openpose command
                 # display & render_pose disable video output
@@ -278,14 +290,9 @@ class SoccerVideo:
             self.poses[basename] = poses
         return 0
 
-    # copied from tabletop
-    # - removes all poses with less keypoints than keypoint_thresh
-    # - removes all poses where the neck doesn't pass the nms test (utils.nms.nms_wrapper)
-    #   https://github.com/rbgirshick/fast-rcnn/blob/master/lib/utils/nms.py
-    # - remove poses outside of field
 
     def refine_poses(self, keypoint_thresh=10, score_thresh=0.5, neck_thresh=0.59, margin=0.0):
-        W, H = 104.73, 67.74
+        W, H = 103.0, 67.0
 
         for i, basename in enumerate(tqdm(self.frame_basenames)):
             poses = self.poses[basename]

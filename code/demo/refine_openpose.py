@@ -6,20 +6,19 @@ from os.path import isfile, join, exists
 
 
 ################################################################################
-# run: python3 refine_openpose.py --path_to_data ~/Data/.../
+# run: python3 refine_openpose.py --path_to_data ~/path/to/data/
 ################################################################################
 
 
 # CMD Line arguments
 parser = argparse.ArgumentParser(description='Estimate the poses')
 # --path_to_data: where the images are
-parser.add_argument('--path_to_data', default='/home/bunert/Data/camera0', help='path')
+parser.add_argument('--path_to_data', default='~/path/to/data', help='path')
 
 opt, _ = parser.parse_known_args()
 
 # initialize SoccerVideo for every camera
 db = soccer.SoccerVideo(opt.path_to_data)
-# what exactly do those?
 db.gather_detectron()
 db.digest_metadata()
 

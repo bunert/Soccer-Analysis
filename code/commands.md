@@ -159,7 +159,7 @@ ffmpeg -i CamVision-Cameras/Right-2019-03-26-20-40-02.mp4 -vcodec copy -acodec c
 ffmpeg -i TV\ cameras/SUI-DEN_K9\ Off\ Rechts_1.HZ.mov -vcodec copy -acodec copy -ss 451 -t 30 /home/bunert/Videos/K9/K9.mov
 
 # extract frames
-ffmpeg -i Right/Right.mp4 -qscale:v 2 Right/images/%08d.jpg -hide_banner
+ffmpeg -i Right/Right.mp4 -qscale:v 2 -vf yadif -ss 00:00:00.000 -t 30 Right/images/%08d.jpg -hide_banner
 
 
 # VNC remote access port 200 or 5900

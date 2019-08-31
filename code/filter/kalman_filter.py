@@ -18,31 +18,20 @@ class Kalman:
     def __init__(self, cameras, keypoints, R_std, Q_var):
 
         #Variables:
-        self.camera_number = cameras                    # number ob cameras
-        self.state_dim = 6                        # per keypoint
-        self.measurement_dim = 2 * self.camera_number  # per keypoint
-        self.keypoint_number = keypoints                # COCO model
-        self.frame_number = 0                     # actual interation number of the filter
+        self.camera_number = cameras                     # number ob cameras
+        self.state_dim = 6                               # per keypoint
+        self.measurement_dim = 2 * self.camera_number    # per keypoint
+        self.keypoint_number = keypoints                 # COCO model
+        self.frame_number = 0                            # actual interation number of the filter
 
-        self.R_std=R_std                                   # measurement noise: before 1.0
-        self.Q_var=Q_var                                   # process/system noise: before 5.0
+        self.R_std=R_std**2                              # measurement noise: before 1.0
+        self.Q_var=Q_var**2                              # process/system noise: before 5.0
 
         # state dimension: [x,y,z,x',y',z'] for 18 keypoints
         self.x_dimension = self.state_dim * self.keypoint_number           # 108
         # measurement dimension: [x0, y0, x1, y1, x2,..., x_j, y_j] screen coord. for all j cameras for 18 keypoints
         self.z_dimension = self.measurement_dim * self.keypoint_number     # 180
         self.dt = 0.04                                     # time steps: 1/25 FPS
-
-
-        # #Number of pixels in x and y direction where we still accept the filter output.
-        # self.threshold = 100
-        # Number of frames without update
-        # self.frames_without_update = 0
-
-        # Number of frames where a keypoint didn't get an update
-        # self.keypoints_no_update_count = np.zeros(18)
-        # self.frames_without_update_allowed = 5
-
 
         #Build State Vector X: [x,y,z,x',y',z'] for each keypoint
         X = np.zeros((self.x_dimension, 1))
@@ -54,7 +43,8 @@ class Kalman:
         ekf.x = X
 
         # state covariance
-        ekf.P *= np.zeros((self.x_dimension,self.x_dimension))
+        #ekf.P = np.zeros((self.x_dimension,self.x_dimension))
+        ekf.P = np.eye(self.x_dimension) * 20
 
         # Process Model
         # Build Transition Matrix F or also called A
@@ -94,10 +84,6 @@ class Kalman:
         self.filter = ekf
 
     def initialize_state(self, positions_3D): # keypoints included in arguments
-        # #Number of pixels in x and y direction where we still accept the filter output.
-        # self.threshold = 200
-
-
         # set state vector according to the (18,3) Matrix of the player
         new_state = []
         for i in range (positions_3D.shape[0]):
@@ -109,11 +95,11 @@ class Kalman:
             new_state.append(positions_3D[i,2])
 
             # x velocity
-            new_state.append(5.)
+            new_state.append(3.)
             # y velocity (vertical up)
-            new_state.append(0.)
+            new_state.append(3.)
             # z velocity
-            new_state.append(5.)
+            new_state.append(0.)
 
         self.filter.x = np.array([new_state]).T
 
@@ -216,81 +202,12 @@ class Kalman:
     def update(self, z, data_dict): # keypoints was also included
         """do some sort of processing on the keypoints and then update the filter"""
 
-        # TODO: idea is this: when we have no openpose measurement for a certain keypoint,
-        # then we just go ahead and modify the R matrix accordingly, setting R diagonal very
-        # high for the missing values and then passing the previous filter value as measurement
-        # that way the filter should not really start overestimating the value of the predictions
-        # that should allow us to skip a few frames and still have a reasonable estimate for the filter.
-
-        ########################################################################
-        # old logic
-        ########################################################################
-        # new_state = []
-        #
-        # #Stores the indexes of the values in the filter that should be reinitialized with the openpose output
-        # re_initialize_indexes = []
-        #
-        # #Stores the indexes of the keypoints that did not get updated this time around
-        # no_update = []
-        #
-        # # Get some information on the "quality of the measurement", so the number
-        # # of keyposes that we have and their estimation score
-        # mean_estimation_score = np.array(keypoints[0])[:,2].mean()
-        # number_of_estimates = np.count_nonzero(np.array(keypoints[0])[:,0])
-        #
-        # print("Mean Score: {}".format(mean_estimation_score))
-        # print("# Of Estimates: {}".format(number_of_estimates))
-        #
-        #
-        # #Start looping over the keypoints and update with new measurement if it is good (aka not too far off)
-        # for index,keypoint in enumerate(keypoints[0]):
-        #
-        #     x_openpose, y_openpose, confidence = keypoint[0], keypoint[1], keypoint[2]
-        #     x_filter, y_filter = self.filter.x[index * 4][0], self.filter.x[index * 4 + 2][0]
-        #
-        #     delta_x, delta_y = abs(x_filter-x_openpose), abs(y_filter-y_openpose)
-        #
-        #     if confidence == 0:
-        #         #no keypoint found by openpose this time
-        #         no_update.append(index)
-        #         x_openpose = x_filter
-        #         y_openpose = y_filter
-        #
-        #         #Set R matrix very large for the no-update values to avoid that the filter starts learning
+        #Set R matrix very large for the no-update values to avoid that the filter starts learning
         #         new_R[index * 2,index * 2] = 10000.
         #         new_R[index * 2 + 1,index * 2 + 1] = 1000.
         #         new_state.append(x_openpose)
         #         new_state.append(y_openpose)
         #         continue
-        #
-        #     if (delta_x > self.threshold) or (delta_y > self.threshold):
-        #
-        #         if self.keypoints_no_update_count[index] < self.frames_without_update_allowed:
-        #             x_openpose = x_filter
-        #             y_openpose = y_filter
-        #             no_update.append(index)
-        #             new_R[index * 2,index * 2] = 10000.
-        #             new_R[index * 2 + 1,index * 2 + 1] = 10000.
-        #         else:
-        #             self.keypoints_no_update_count[index] = 0
-        #             re_initialize_indexes.append(index)
-        #
-        #     new_state.append(x_openpose)
-        #     new_state.append(y_openpose)
-        #
-        # if (len(re_initialize_indexes) > 3) and (number_of_estimates > 20):
-        #     self.initialize_state(keypoints)
-        #
-        #     print("Reinitializing Kalman Filter due to too much drift!: \n Mean Score: {}".format(mean_estimation_score,))
-        #     return
-        #
-        # #update the list of no_updates
-        # for index, value in enumerate(no_update):
-        #     self.keypoints_no_update_count[value] += 1
-        #
-        #
-        # self.filter._R = np.array(new_R)
-        # self.filter.update(new_state)
 
         self.filter.update(z, HJacobian=self.HJacobian_at, Hx=self.Hx, args=(data_dict), hx_args=(data_dict))
 
@@ -301,17 +218,3 @@ class Kalman:
 
         self.filter.predict()
         return self.filter.x
-
-
-
-    ############################################################################
-    # Sympy example
-    # maybe include to make sure Jacobian is right
-    ############################################################################
-    # example:
-    # def hx(x):
-    # x, y, z, x_vel, y_vel, z_vel = sympy.symbols('x y z x_vel y_vel z_vel')
-    # # example:
-    # X = sympy.Matrix([rho*cos(phi), rho*sin(phi), rho**2])
-    # Y = sympy.Matrix([x, y, z, x_vel, y_vel, z_vel])
-    # X.jacobian(Y)
