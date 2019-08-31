@@ -319,19 +319,6 @@ def project_field_to_image(camera):
 
         behind_points = (depth < 0).nonzero()[0]
         tmp[behind_points, :] *= -1
-        # if len(behind_points) > 0:
-        #     new_points = camera.
-
-        # Check if point begind the camera
-        # center = camera.get_position()
-        # dir = camera.get_direction()
-        # for j in range(field_list[i].shape[0]):
-        #     point_dir = field_list[i][j, :] - center
-        #     point_dir /= np.linalg.norm(point_dir)
-        #
-        #     dot_prod = np.dot(dir, point_dir)
-        #
-
         field_points2d.append(tmp)
 
     return field_points2d
@@ -549,7 +536,7 @@ def project_3d_players_on_image(db_cam, players_3d, frame, num=1):
             points2d.append(tmp)
         draw_skeleton_on_image_2dposes(img, points2d, cmap, one_color=True)
     num_str = str(num)
-    cv2.imwrite('/home/bunert/Data/results/'+ db_cam.name +  '_3d_'+ num_str + '.jpg',np.uint8(img[:, :, (2, 1, 0)]))
+    cv2.imwrite('~/Downloads/'+ db_cam.name +  '_3d_'+ num_str + '.jpg',np.uint8(img[:, :, (2, 1, 0)]))
 
 
 ################################################################################
@@ -566,7 +553,7 @@ def draw_2d_players_on_image(db_cam, players_2d, frame, player=False):
         for i in range (len(players_2d)):
             draw_skeleton_on_image_2dposes(img, players_2d[i], cmap, one_color=True)
 
-    cv2.imwrite('/home/bunert/Data/results/'+ db_cam.name + '_2d' + '.jpg',np.uint8(img[:, :, (2, 1, 0)]))
+    cv2.imwrite('~/Downloads/'+ db_cam.name + '_2d' + '.jpg',np.uint8(img[:, :, (2, 1, 0)]))
 
 
 ################################################################################
@@ -583,4 +570,4 @@ def draw_openpose_on_image(db_cam, players_2d_dict, frame, player=False):
     else:
         players_2d = [ v for v in players_2d_dict.values() ]
         draw_skeleton_on_image(img, players_2d, cmap, one_color=True)
-    cv2.imwrite('/home/bunert/Data/results/'+ db_cam.name + '_openpose' + '.jpg',np.uint8(img[:, :, (2, 1, 0)]))
+    cv2.imwrite('~/Downloads/'+ db_cam.name + '_openpose' + '.jpg',np.uint8(img[:, :, (2, 1, 0)]))

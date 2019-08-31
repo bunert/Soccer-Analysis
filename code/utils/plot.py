@@ -8,7 +8,7 @@ from scipy.linalg import block_diag, norm
 import numpy as np
 from filterpy.common import Q_discrete_white_noise
 import camera as cam_utils
-import draw2 as draw
+import draw as draw
 
 import datetime
 import dash
